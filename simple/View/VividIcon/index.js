@@ -1,0 +1,1 @@
+import "./VividIcon.tests.js";

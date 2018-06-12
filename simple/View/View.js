@@ -2,16 +2,20 @@ import { is, obj } from "../util.js";
 
 export default class View {
 	constructor(...args){
-		this.prerender(...args);
+		this.instantiate(...args);
+	}
+
+	instantiate(...args){
 		this.assign(...args);
+		this.prerender(...args);
 		this.append(this.render);
 		this.initialize();
 	}
 
 	prerender(...args){
-		if (is.obj(args[0])){
-			this.assign(obj.pluck(args[0], ["tag", "classes"]));
-		}
+		// if (is.obj(args[0])){
+		// 	this.assign(obj.pluck(args[0], ["tag", "classes"]));
+		// }
 		
 		this.el = document.createElement(this.tag || "div");
 		View.captor && View.captor.append(this);

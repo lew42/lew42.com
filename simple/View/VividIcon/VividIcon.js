@@ -1,7 +1,10 @@
 import View from "../View.js";
-import "./font-awesome.js";
+// import "./font-awesome.js";
+import "./vivid-icons.min.js"
 
-export default class Icon extends View {
+console.warn("vivid icons are initialized on DOMContentLoaded, which is too early for my views");
+
+export default class VividIcon extends View {
 	instantiate(...args){
 		this.prerender();
 		this.assign(...args);
@@ -9,8 +12,7 @@ export default class Icon extends View {
 
 	set icon(icon){
 		if (icon){
-			this.removeClass("fa-" + this._icon);
-			this.addClass("fa-" + icon);
+			this.attr("data-vi", icon);
 			this._icon = icon;
 		}
 		return this;
@@ -32,10 +34,8 @@ export default class Icon extends View {
 	}
 }
 
-Icon.prototype.tag = "i";
-Icon.prototype._icon = "circle";
-Icon.prototype.classes = "fa fa-fw fa-circle";
+VividIcon.prototype.tag = "i";
 
 export function icon(icon){
-	return new Icon({ icon });
+	return new VividIcon({ icon });
 };
