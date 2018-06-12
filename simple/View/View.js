@@ -1,17 +1,21 @@
-import is from "../is.js";
+import { is, obj } from "../util.js";
 
 export default class View {
 	constructor(...args){
+		this.prerender(...args);
 		this.assign(...args);
-		this.prerender();
 		this.append(this.render);
 		this.initialize();
 	}
 
-	prerender(){
+	prerender(...args){
+		if (is.obj(args[0])){
+			this.assign(obj.pluck(args[0], ["tag", "classes"]));
+		}
+		
 		this.el = document.createElement(this.tag || "div");
 		View.captor && View.captor.append(this);
-		this.classes && this.addClass(this.classes);
+		this.addClass(this.classes);
 	}
 
 	render(){}
@@ -215,41 +219,7 @@ export default class View {
 	}
 
 	assign(...args){
-		Object.assign(this, ...args);
-		return this;
-	}
-
-	static get el(){
-		const self = this; // bind to current class
-		return this._el || (this._el = function el(token, ...args){
-			if (!token) throw "must provide element token";
-			const tokenResults = parseToken(token);
-			return new self({ tag: tokenResults.tag })
-				.addClass(tokenResults.classes)
-				.append(...args);
-
-		});
-	}
-
-	static get div(){
-		const self = this;
-		return function div(...args){
-			const opts = {};
-			
-			if (is.str(args[0]) && args[0][0] === "."){
-				opts.classes = args[0].split(".").slice(1).join(" ");
-				args.shift();
-			}
-
-			return new self(opts).append(args);
-		}
-	}
-
-	static get package(){
-		return {
-			a: "a",
-			b: "b"
-		}
+		return Object.assign(this, ...args);
 	}
 
 	static set_captor(view){
@@ -260,13 +230,29 @@ export default class View {
 	static restore_captor(){
 		View.captor = View.previous_captors.pop();
 	}
+
+	static stylesheet(url){
+		return (new View({ tag: "link" })).attr("rel", "stylesheet").attr("href", url).appendTo(document.head);
+	}
+}
+
+export function el(token, ...args){
+	return new View(parseToken(token)).append(...args);
+}
+
+export function div(...args){
+	const opts = {};
+
+	if (is.str(args[0]) && args[0][0] === "."){
+		opts.classes = args[0].split(".").slice(1).join(" ");
+		args.shift();
+	}
+
+	return new View(opts).append(args);
 }
 
 View.previous_captors = [];
 
-
-const el = View.el;
-export { el }
 
 document.ready = new Promise((res, rej) => {
 	if (/comp|loaded/.test(document.readyState))
@@ -280,7 +266,7 @@ document.ready = new Promise((res, rej) => {
 
 function parseToken(token){
 	if (!token)
-		return {};
+		throw "must provide element token";
 
 	const parts = token.split(".");
 	const results = {};
@@ -293,79 +279,3 @@ function parseToken(token){
 
 	return results;
 }
-
-/*
-
-new View({ assign })
-div(".class.es", { append });
-el("tag.class.es", { append }, self => {});
-
-
-
-extend View if you need methods, otherwise View is setup to append everything?
-
-Or, maybe the basic View is as lean as possible?
-
-Instead of trying to define all the things...?
-
-view.section(view.h1("Section Title"), view.p(view.filler()));
-
-It's either:
-
-el("section.five", "Contents");
-el("input", { type: "email" });
-
-
-h1(), h2(), h3(), p(), span(), ul(li(), li(), li())...?
-el("h1.whatever", "contents");
-el("h2", "contents")
-el("ul", el("li", contents), el("li"))
-
-v.h1()
-
-const { h1, h2, h3, p, span, ul, li, etc } = View;
-
-then, h1(".class.es", "contents")
-
-Section("Contents").addClass("five");
-
-
-v("span" || "div")
-	.addClass("one two")
-	.append()
-
-V(".parent", parent => {
-	parent.thing = V(".thing", thing => {
-		// parent.thing isn't available yet
-
-	});
-
-	parent.append({
-		thing: V("content?")
-	})
-
-	parent.append({});
-});
-
-const parent = V(".parent");
-
-parent.append({
-	thing: V(function(){
-		this === parent.thing; // nope, parent.thing reference won't be ready
-			// but, parent has been assigned at this point...
-	})
-});
-
-V(".parent", {
-	thing: Icon("beer")
-});
-
-V(".parent").append({
-	thing: V(".extra.classes", "content").click(thing => {
-		// how do we get 
-	});
-});
-
-
-
-*/

@@ -1,8 +1,8 @@
-import "./livereload.js";
-import mixin from "./mixin.js";
-import View from "./View/View.js";
+import "../livereload.js";
+import mixin from "../mixin.js";
+import View, { el, div } from "../View/View.js";
 
-const div = View.div;
+View.stylesheet("/simple/Test/Test.css");
 
 export default class Test {
 	constructor(...args){
@@ -52,7 +52,7 @@ export default class Test {
 		Test.set_captor(this);
 
 			// run the test
-			this.fn();
+			this.fn(this);
 
 		Test.restore_captor();
 		console.groupEnd();
@@ -72,18 +72,17 @@ export default class Test {
 	}
 
 	match(){
-		return window.location.hash.substring(1) === this.name;
+		return decodeURI(window.location.hash.substring(1)) === this.name;
 	}
+}
 
-	static get test(){
-		const self = this;
-		return function(name, fn){
-			return new self({
-				name: name,
-				fn: fn
-			})
-		}
-	}
+export function test(name, fn){
+	return new Test({ name, fn });
+}
+
+export function assert(value){
+	if (Test.captor) Test.captor.assert(value);
+	else console.error("whoops");
 }
 
 Object.assign(Test, {
@@ -94,12 +93,6 @@ Object.assign(Test, {
 	},
 	restore_captor: function(){
 		this.captor = this.previous_captors.pop();
-	},
-	assert: function(value){
-		if (Test.captor)
-			Test.captor.assert(value);
-		else
-			console.error("whoops");
 	},
 	controls: function(){
 		var controls = View().addClass("test-controls").append({

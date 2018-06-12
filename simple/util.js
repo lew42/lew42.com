@@ -1,4 +1,4 @@
-const is = {
+export const is = {
 	arr: function(value){
 		return toString.call(value) === '[object Array]';
 		// or return Array.isArray()?
@@ -39,4 +39,15 @@ const is = {
 	}
 };
 
-export default is;
+export const obj = {
+	pluck(o, props){
+		const ret = {};
+		for (const prop of props){
+			if (o.hasOwnProperty(prop)){
+				ret[prop] = o[prop];
+				delete o[prop];
+			}
+		}
+		return ret;
+	}
+};

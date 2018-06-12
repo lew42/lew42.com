@@ -1,11 +1,18 @@
-import View from "./View.js";
-import Test from "../Test.js";
+import View, { el, div } from "./View.js";
+import Test, { test, assert } from "../Test/Test.js";
 
-const test = Test.test;
-const assert = Test.assert;
-
-const div = View.div;
-const el = View.el;
+test("objects", t => {
+	div(".one.two", {
+		one: "string",
+		two: div(".extra.classes", div("several"), div("children")),
+		three(){
+			this.addClass("yerp");
+			div("one");
+			div("two");
+			div("three");
+		}
+	});
+});
 
 test("hello", () => {
 	assert(true);
@@ -16,6 +23,7 @@ test("hello", () => {
 	div(".hello.world");
 	div(".hello.world", "hello", "world");
 	div(".hello.world", "hello world");
+	div("bloodmoss", "ginseng", "spider's silk", "mandrake root", "black pearl", "nightshade", "garlic", "sulfurous ash")
 	div(".one.two", {
 		three: "four",
 		five: div(".six", "seven")
@@ -33,4 +41,8 @@ test("hello", () => {
 		tag: "section",
 		classes: "one two three"
 	})
-})
+
+	test("nested tests?", t => {
+		t.assert("yo");
+	});
+});

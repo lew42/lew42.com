@@ -1,0 +1,1 @@
+import "./Icon.tests.js";
