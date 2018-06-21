@@ -1,0 +1,12 @@
+.item { padding: 1em; background: white; border-radius: 3px; margin-bottom: 0.5em;}
+
+.ff-montserrat { font-family: Montserrat; }
+
+.fs-50 { font-size: 0.5em; }
+.fs-75 { font-size: 0.75em; }
+
+.cols { display: flex; }
+.cols.one > * { width: 100%; }
+.cols.two > * { width: 50%; }
+
+.style-85 {border: 1px solid #2d2de4;}

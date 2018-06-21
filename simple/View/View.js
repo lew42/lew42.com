@@ -155,7 +155,7 @@ export default class View {
 	}
 
 	// inline styles
-	style(prop, value){
+	css(prop, value){
 		// set with object
 		if (is.obj(prop)){
 			for (var p in prop){

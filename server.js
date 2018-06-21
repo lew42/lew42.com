@@ -26,7 +26,9 @@ wss.on("connection", function(ws){
 
 	// service(ws);
 
-	chokidar.watch(sites.map(site => "./" + site)).on("change", (e) => {
+	chokidar.watch(sites.map(site => "./" + site).concat([
+			"!**/*.css"
+		])).on("change", (e) => {
 		console.log(e, "changed, sending reload message");
 		ws.send("reload", (err) => {
 			if (err) console.log("livereload transmit error");
