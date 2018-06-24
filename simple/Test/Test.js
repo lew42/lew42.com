@@ -19,7 +19,9 @@ export default class Test {
 
 	render(){
 		this.view = div().addClass('test').append({
-			bar: div(this.label()).click(this.activate.bind(this)),
+			bar: div({
+				label: div(this.label()).click(this.activate.bind(this))
+			}),
 			content: div(),
 			footer: div()
 		});

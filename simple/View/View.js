@@ -2,17 +2,19 @@ import { is, obj } from "../util.js";
 
 export default class View {
 	constructor(...args){
-		this.instantiate(...args);
-	}
-
-	instantiate(...args){
+		// this.instantiate(...args); // only way to preceed constructor logic
 		this.assign(...args);
-		this.prerender(...args);
-		this.append(this.render);
-		this.initialize();
+		this.render();
 	}
 
-	prerender(...args){
+	// instantiate(...args){
+	// 	this.assign(...args);
+	// 	this.prerender(...args);
+	// 	// this.append(this.content); // optional
+	// 	// this.initialize();
+	// }
+
+	render(){
 		// if (is.obj(args[0])){
 		// 	this.assign(obj.pluck(args[0], ["tag", "classes"]));
 		// }
@@ -20,11 +22,8 @@ export default class View {
 		this.el = document.createElement(this.tag || "div");
 		View.captor && View.captor.append(this);
 		this.addClass(this.classes);
+		if (this.content) this.append(this.content);
 	}
-
-	render(){}
-
-	initialize(){}
 
 	append(...args){
 		for (const arg of args){
@@ -71,7 +70,7 @@ export default class View {
 		if (value && value.el){
 			view = value;
 		} else {
-			view = (new this.constructor()).append(value);
+			view = (new View()).append(value);
 		}
 
 		this[prop] = view.addClass(prop).appendTo(this);
@@ -100,6 +99,10 @@ export default class View {
 
 	hasClass(cls){
 		return this.el.classList.contains(cls);
+	}
+
+	toggleClass(cls){
+		return this.hasClass(cls) ? this.removeClass(cls) : this.addClass(cls);
 	}
 
 	attr(name, value){
@@ -191,6 +194,12 @@ export default class View {
 	index(){
 		var index = 0, prev;
 		// while (prev = this.el.previousElementSibling)
+	}
+
+	reset(...args){
+		this.empty();
+		this.append(...args);
+		return this;
 	}
 
 	hide(){
