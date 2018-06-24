@@ -8,6 +8,8 @@
 .shade-2 { background: rgba(0,0,0,0.06); }
 .shade-3 { background: rgba(0,0,0,0.1); }
 
+.ib { display: inline-block; }
+
 .item {}
 
 :root {
@@ -15,7 +17,6 @@
 }
 
 .pad, .pad-c > * { padding: var(--size); }
-.pad-c { padding: 0; }
 
 /*.squish { --size: calc(--size/2) --size; }*/
 .squish, .squish-c > * { --size: 0.5em 1em; }
@@ -241,3 +242,5 @@ item.wrap
 .card-stack > .card {
 	border-radius: 0;
 }
+
+.expandable-alpha i.icon.fa.fa-fw.fa-beer {}

@@ -27,6 +27,7 @@ wss.on("connection", function(ws){
 	// service(ws);
 
 	chokidar.watch(sites.map(site => "./" + site).concat([
+			"./lew42.github.io",
 			"!**/*.css"
 		])).on("change", (e) => {
 		console.log(e, "changed, sending reload message");

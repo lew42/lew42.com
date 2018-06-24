@@ -247,6 +247,13 @@ export default class View {
 	static stylesheet(url){
 		return (new View({ tag: "link" })).attr("rel", "stylesheet").attr("href", url).appendTo(document.head);
 	}
+
+	static async write(...args){
+		const body = new View();
+		await document.ready;
+		body.el = document.body;
+		body.append(...args);
+	}
 }
 
 export function el(token, ...args){

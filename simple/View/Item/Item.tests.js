@@ -5,6 +5,10 @@ import Icon, { icon } from "../Icon/Icon.js";
 
 import importedItem from "./item-import-test.js";
 
+test("inline-block flex", t => {
+	div("Lorem ipsum dolor set ", div(".ib", div(".flex", icon("beer"), div("amet"))), " adipiscing elit.")
+});
+
 class IconItem extends Item {
 	content(){
 		this.icon = icon(this.icon || "beer");
@@ -76,13 +80,13 @@ xtest("things", t => {
 
 function expandable(title){
 	return div(".expandable.card", {
-		preview: div(".wrap.pad-c.flex.sep-all-c", {
+		preview: div(".wrap.flex.sep-all-c", {
 			icon: icon("beer"),
-			label: div(".item-label.flex-grow.flex.pad-c", {
+			label: div(".item-label.flex-grow.flex.pad-c.wrap", {
 				title: div(".flex-grow", title || "this is the title"),
 				primary: icon("plus")
 			}),
-			btns: div(".pad-c.flex", icon("arrow-right"))
+			btns: div(".pad-c.flex.wrap", icon("arrow-right"))
 		}),
 		reveal: div(".wrap.pad-c.sep-all-c", {
 			body: "this is the body",
