@@ -1,0 +1,27 @@
+.pager { display: flex; }
+.pager > .tabs { min-width: 15%; }
+.pager > .tabs > .tab { cursor: pointer; padding: 0.5em 1em; }
+.pager > .pages { flex-grow: 1; }
+.pager > .pages > .page { padding: 1em 1.4em; }
+
+.pager.wires, .pager.wires * { border: 1px solid black; }
+
+/*
+.pager {--bg: hsla(0, 0%, 94%, 1);display: flex;}
+.pager.light {--bg: hsla(0, 0%, 98%, 1);}
+.pager > .tabs { min-width: 15%; }
+.pager > .tabs > .tab {cursor: pointer;color: white;background: hsla(0, 0%, 90%, 1);padding: 0.5em 1em;border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);border-right: 1px solid hsla(0, 0%, 0%, 0.1);}
+.pager > .tabs > .tab.active { border-right: none;}
+
+.pager.light > .tabs > .tab {background: hsla(0, 0%, 94%, 1);}
+.pager.light > .tabs > .tab.active, 
+.pager.light > .pages {background: hsla(0, 0%, 100%, 1);}
+
+.pager > .pages {flex-grow: 1;padding: 1em 1.4em;}
+
+.pager > .tabs > .tab.active, 
+.pager > .pages {
+	background: hsla(0, 0%, 96%, 1);
+}
+
+.pager.wires {}*/
