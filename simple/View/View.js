@@ -4,7 +4,8 @@ export default class View {
 	constructor(...args){
 		// this.instantiate(...args); // only way to preceed constructor logic
 		this.assign(...args);
-		this.render();
+		this.prerender();
+		this.initialize();
 	}
 
 	// instantiate(...args){
@@ -14,7 +15,7 @@ export default class View {
 	// 	// this.initialize();
 	// }
 
-	render(){
+	prerender(){
 		// if (is.obj(args[0])){
 		// 	this.assign(obj.pluck(args[0], ["tag", "classes"]));
 		// }
@@ -24,6 +25,8 @@ export default class View {
 		this.addClass(this.classes);
 		if (this.content) this.append(this.content);
 	}
+
+	initialize(){} // override point
 
 	append(...args){
 		for (const arg of args){
@@ -55,6 +58,11 @@ export default class View {
 			this.append(returnValue);
 
 		return this;
+	}
+
+	append_obj(obj){
+		if (!obj.render) throw "objects must have .render method";
+		this.append(obj.render());
 	}
 
 	append_pojo(pojo){
