@@ -1,32 +1,43 @@
 import { is, obj } from "../util.js";
+import filler from "./filler.js";
 
 export default class View {
 	constructor(...args){
-		// this.instantiate(...args); // only way to preceed constructor logic
+		this.instantiate(...args);
+	}
+
+	instantiate(...args){
 		this.assign(...args);
 		this.prerender();
+		this.render();
 		this.initialize();
 	}
 
-	// instantiate(...args){
-	// 	this.assign(...args);
-	// 	this.prerender(...args);
-	// 	// this.append(this.content); // optional
-	// 	// this.initialize();
-	// }
+	initialize(){}
 
 	prerender(){
-		// if (is.obj(args[0])){
-		// 	this.assign(obj.pluck(args[0], ["tag", "classes"]));
-		// }
-		
-		this.el = document.createElement(this.tag || "div");
-		View.captor && View.captor.append(this);
-		this.addClass(this.classes);
-		if (this.content) this.append(this.content);
+		this.el = this.el || document.createElement(this.tag || "div");
+		this.capturable && View.captor && View.captor.append(this);
+		this.classify && this.classify();
 	}
 
-	initialize(){} // override point
+	classify(){
+		this.addClass(this.classes);
+
+		if (!this.type && this.constructor.name !== "View"){
+			this.type = this.constructor.name.toLowerCase();
+		}
+
+		if (this.type)
+			this.addClass(this.type);
+
+		if (this.name)
+			this.addClass(this.name);
+	}
+
+	render(){
+		this.content && this.append(this.content);
+	}
 
 	append(...args){
 		for (const arg of args){
@@ -81,7 +92,13 @@ export default class View {
 			view = (new View()).append(value);
 		}
 
-		this[prop] = view.addClass(prop).appendTo(this);
+		if (!this[prop]){
+			this[prop] = view;
+		} else {
+			console.warn(`.${prop} property is already taken`);
+		}
+
+		view.addClass(prop).appendTo(this);
 
 		return this;
 	}
@@ -111,6 +128,30 @@ export default class View {
 
 	toggleClass(cls){
 		return this.hasClass(cls) ? this.removeClass(cls) : this.addClass(cls);
+	}
+
+	html(value){
+		// set
+		if (is.def(value)){
+			this.el.innerHTML = value;
+			return this;
+
+		// get
+		} else {
+			return this.el.innerHTML
+		}
+	}
+
+	text(value){
+		// set
+		if (is.def(value)){
+			this.el.textContent = value;
+			return this;
+
+		// get
+		} else {
+			return this.el.textContent;
+		}
 	}
 
 	attr(name, value){
@@ -268,18 +309,25 @@ export function el(token, ...args){
 	return new View(parseToken(token)).append(...args);
 }
 
-export function div(...args){
-	const opts = {};
-
+function view_opts(opts, args){
 	if (is.str(args[0]) && args[0][0] === "."){
 		opts.classes = args[0].split(".").slice(1).join(" ");
 		args.shift();
 	}
+	return opts;
+}
 
-	return new View(opts).append(args);
+export function div(...args){
+	return new View(view_opts({}, args)).append(...args);
+}
+
+export function p(...args){
+	return new View(view_opts({ tag: "p" }, args)).append(...args);
 }
 
 View.previous_captors = [];
+View.prototype.filler = filler;
+View.prototype.capturable = true;
 
 
 document.ready = new Promise((res, rej) => {
@@ -306,4 +354,8 @@ function parseToken(token){
 		results.classes = parts.join(" ");
 
 	return results;
+}
+
+is.view = function(value){
+	return value && is.dom(value.el);
 }

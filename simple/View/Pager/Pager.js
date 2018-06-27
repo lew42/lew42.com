@@ -2,70 +2,123 @@
 import View, { el, div } from "/simple/View/View.js";
 import Test, { test, assert } from "/simple/Test/Test.js";
 import Base from "/simple/Base/Base.js";
+import { is } from "/simple/util.js";
 
 View.stylesheet("/simple/View/Pager/Pager.css");
 
-class Page extends Base {
-	// @prop title
-	render(){
-		this.pager.$pages.append(this.view = div(".page", this.content));
+/*
+
+Pager
+	Tabs
+		Tab
+	Pages
+		Page
+
+Pager.add({
+	name: {
+		tab: <viewable>, // variable viewable
+			// 1) pass in a view (or dom?) and it gets adopted
+			// 2) pass in a str or fn or pojo, and it gets wrapped
+		page: <viewable>
 	}
+})
 
-	render_tab(){
-		this.pager.$tabs.append(this.tab = div(".tab", this.name).click(tab => {
-			this.pager.activate(this);
-		}));
-	}
 
-	activate(){
-		if (!this.view)
-			this.render();
+div("str") -> <div>str</div>
+div({ props }) -> <div><divs...></div>
+div(fn(){}) -> captures divs
 
-		this.view.addClass("active").show();
-		this.tab.addClass("active");
-	}
-
-	deactivate(){
-		this.tab.removeClass("active");
-		this.view.hide().removeClass("active");
-	}
-}
-
-// Page.prototype.View = class PageView extends simple.View {
-
-// }
-
-// Page.prototype.View.prototype.classes = "page";
+*/
 
 export default class Pager extends View {
-	initialize(){
-		this.pages = [];
+	instantiate(...args){
+		this._pages = [];
+
+		this.assign(...args);
+		this.prerender();
+		this.render();
+		this.initialize();
 	}
 
-	content(){
-		this.$tabs = div(".tabs");
-		this.$pages = div(".pages");
+	content(){ 
+		this.addClass("base");
+		return {
+			tabs: div(),
+			pages: div()
+		}
 	}
 
+	/*
+
+	view.become(<viewable>)
+		-> if is.view, this.el = view.el; // "mount" ?
+		else, this.content = <viewable> ?
+
+	add({
+		name: "str" // page content
+		name: fn // page content
+		name(){ return {
+			props // page content props
+		}}
+		name: view // page itself
+		name: {
+			tab: "str" // tab content
+			tab: fn // tab content
+			tab: view // tab itself
+			content: // page content
+			page: "str" // page content
+			page: view // page itself
+
+			if (.page is view, --> page itself)
+			if (.page and !not view, --> content)
+
+			el: view.el // --> will auto "mount"
+		}
+	})
+	*/
 	add(pages){
 		for (const name in pages){
-			this.add_page({
-				name: name,
-				content: pages[name]
-			});
+			this.add_page(this.make_page(name, pages[name]));
 		}
 		return this;
 	}
 
-	add_page(page){
-		if (!(page instanceof Page))
-			page = new Page(page);
+	make_page(name, value){
+		const Page = this.get_page_constructor();
+		const opts = {
+			name,
+			pager: this
+		};
+		if (is.view(value)){
+			opts.el = value.el;
+			return new Page(opts);
+		} else if (is.pojo(value)){
+			return new Page(opts, value);
+		} else {
+			opts.content = value;
+			return new Page(opts);
+		}
+	}
 
-		this.pages.push(page);
+	get_page_constructor(){
+		return this.Page || this.constructor.Page;
+	}
+
+	get_tab_constructor(page){
+		return page.Tab || this.Tab || this.constructor.Tab;
+	}
+
+	add_page(page){
+		const Page = this.get_page_constructor();
+		if (!(page instanceof Pager.Page)){
+			page = new Page(page, { pager: this });
+		}
+
+		this._pages.push(page);
 		
 		page.pager = this;
-
 		page.render_tab();
+		page.appendTo(this.pages);
 
 		if (!this[page.name]){
 			this[page.name] = page;
@@ -83,7 +136,71 @@ export default class Pager extends View {
 		page.activate();
 		this.current = page;
 	}
+
 }
 
-Pager.prototype.tabs = true;
-Pager.prototype.classes = "pager";
+
+Pager.Page = class Page extends View {
+	instantiate(...args){
+		this.assign(...args);
+		this.prerender();
+
+		
+		this.hide();
+
+		// if .add({ name: div() }), the div is captured elsewhere
+		// does lazy rendering affect SEO?  content that's not rendered can't be indexed...
+		if (this.content && this.content instanceof View)
+			this.render();
+	}
+
+	render(){
+		this.content && this.append(this.content);
+		this.rendered = true;
+	}
+
+	render_tab(){
+		const opts = {
+			page: this,
+			pager: this.pager
+		};
+
+		// allow Tab overrides
+		this.Tab = this.Tab || this.pager.Tab || this.pager.constructor.Tab;
+		
+		// use .name if no .tab value
+		this.tab = this.tab || this.name;
+
+		// view or <viewable>
+		if (is.view(this.tab)){
+			opts.el = this.tab.el;
+		} else {
+			opts.content = this.tab;
+		}
+
+		this.tab = new this.Tab(opts);
+
+		this.pager.tabs.append(this.tab);
+	}
+
+	activate(){
+		if (!this.rendered)
+			this.render();
+
+		this.addClass("active").show();
+		this.tab.addClass("active");
+	}
+
+	deactivate(){
+		this.tab.removeClass("active");
+		this.hide().removeClass("active");
+	}
+}
+
+Pager.Tab = class Tab extends View {
+	initialize(){
+		this.click(t => {
+			this.pager.activate(this.page);
+		});
+	}
+}

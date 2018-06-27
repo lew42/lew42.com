@@ -1,10 +1,82 @@
-.pager { display: flex; }
-.pager > .tabs { min-width: 15%; }
-.pager > .tabs > .tab { cursor: pointer; padding: 0.5em 1em; }
-.pager > .pages { flex-grow: 1; }
-.pager > .pages > .page { padding: 1em 1.4em; }
+/*  use fetch and eval or another mechanism to invoke `template strings`, so you can put ${javascript()} in your css...*/
 
-.pager.wires, .pager.wires * { border: 1px solid black; }
+.demo > .light { background: #ddd; }
+.demo > .dark { background: #333; }
+
+.pager {}
+
+.pager > .tabs {}
+.pager > .tabs > .tab {}
+.pager > .tabs > .tab.active {}
+
+.pager > .pages {}
+.pager > .pages > .page {}
+.pager > .pages > .page.active {}
+
+
+/* .base */
+.base.pager { display: flex; }
+
+.base.pager > .tabs { min-width: 100px; }
+.base.pager > .tabs > .tab { cursor: pointer; }
+.base.pager > .tabs > .tab.active {}
+
+.base.pager > .pages { flex-grow: 1; }
+.base.pager > .pages > .page {}
+.base.pager > .pages > .page.active {}
+
+
+/* .v1 */
+.v1.pager { 
+	--active: #eaeaea;
+	font-family: Verdana; font-size: 13px; }
+
+.v1.pager > .tabs {}
+.v1.pager > .tabs > .tab {background: #888;padding: 0.5em 0.75em;color: #d0d0d0;}
+.v1.pager > .tabs > .tab:hover {background: #999;}
+.v1.pager > .tabs > .tab.active {background: var(--active);color: #000;}
+
+.v1.pager > .pages {}
+.v1.pager > .pages > .page {}
+.v1.pager > .pages > .page.active {background: var(--active);}
+
+.v1.pager > .tabs > .tab.active,
+.v1.pager > .pages > .page.active { background: #eaeaea; color: #000; }
+
+/* .TPL */
+.TPL.pager {}
+
+.TPL.pager > .tabs {}
+.TPL.pager > .tabs > .tab {}
+.TPL.pager > .tabs > .tab.active {}
+
+.TPL.pager > .pages {}
+.TPL.pager > .pages > .page {}
+.TPL.pager > .pages > .page.active {}
+
+
+/*
+see note in /simple/css/readme.md ... we need Templates with automated version classes, but that will take a while
+
+.pager {  }
+.pager_tabs {  }
+.pager_tab {  }
+.pager_pages {  }
+.pager_page {  }
+
+.pager { display: flex; }
+.pager_tabs {min-width: 100px; max-width: 15%;}
+.pager_tab { cursor: pointer; padding: 0.25em 0.5em; }
+.pager_tab.active {}
+.pager_pages { flex-grow: 1; }
+.pager_page { padding: 1em 1.2em; }
+.pager_page.active {}
+
+.pager1.pager { display: flex; }
+.pager1 .pager_tabs { min-width: 15%; }
+.pager1 .pager_tab { cursor: pointer; padding: 0.5em 1em; }
+.pager1 .pager_pages { flex-grow: 1; }
+.pager1 .pager_page { padding: 1em 1.4em; }*/
 
 /*
 .pager {--bg: hsla(0, 0%, 94%, 1);display: flex;}

@@ -1,0 +1,29 @@
+.h-sep, .v-sep, .h-sep-c, .v-sep-c, .sep-all-c, .sep-all {
+	--dark: 1px solid rgba(0,0,0,0.05);
+	--light: 1px solid rgba(255,255,255,0.1);
+}
+
+.v-sep, .v-sep-c > * {
+	border-top: var(--light);
+	border-bottom: var(--dark);
+}
+
+.h-sep, .h-sep-c > * {
+	border-right: var(--dark);
+	border-left: var(--light);
+}
+
+.sep-all, .sep-all-c > * {
+	border-top: var(--light);
+	border-bottom: var(--dark);
+	border-left: var(--light);
+	border-right: var(--dark);
+}
+
+.sep-h:first-child, .sep-h-c > *:first-child {
+	border-left: none;
+}
+
+.sep-h:last-child, .sep-h-c > *:last-child {
+	border-right: none;
+}

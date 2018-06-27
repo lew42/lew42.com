@@ -1,4 +1,6 @@
 import "../livereload.js";
+import "/simple/dev/dev.js";
+import "/simple/css/css.js";
 import mixin from "../mixin.js";
 import View, { el, div } from "../View/View.js";
 
