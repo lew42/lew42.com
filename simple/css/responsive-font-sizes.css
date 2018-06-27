@@ -1,0 +1,39 @@
+body {
+  /* display: flex; */
+}
+#app {
+  flex: 1;
+  max-width: 100%; /* for some reason flex boxes are allowed to overflow.. */
+}
+
+html {
+	font-size: 5px;
+}
+
+@media (min-width: 309px) {
+  html {
+    font-size: 1.618034vw;
+  }
+}
+
+@media (min-width: 1730px) {
+  html {
+    font-size: 28px;
+  }
+}
+
+body {
+	font-size: 13px;
+}
+
+@media (min-width: 803px) {
+  body {
+    font-size: 1.618034vw;
+  }
+}
+
+@media (min-width: 1174px) {
+  body {
+    font-size: 19px;
+  }
+}

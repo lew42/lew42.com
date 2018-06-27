@@ -211,7 +211,7 @@ export default class View {
 		// set with object
 		if (is.obj(prop)){
 			for (var p in prop){
-				this.style(p, prop[p]);
+				this.css(p, prop[p]);
 			}
 			return this;
 
