@@ -20,7 +20,7 @@ export default class Test {
 	}
 
 	render(){
-		this.view = div().addClass('test').append({
+		this.view = div().addClass('test ' + this.name).append({
 			bar: div({
 				label: div(this.label()).click(this.activate.bind(this))
 			}),

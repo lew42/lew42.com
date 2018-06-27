@@ -1,36 +1,49 @@
-body {margin: 0;overflow-y: scroll;}
-
-p { margin-top: 0; }
-
-.grid { display: flex; flex-wrap: wrap; }
-.grid.one > *, .grid > .full.full {
-	width: 100%;
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
 }
 
-.grid.two > *, .grid > .half {
-	width: 50%;
-	box-sizing: border-box;
+body {
+  /* display: flex; */
+}
+#app {
+  flex: 1;
+  max-width: 100%; /* for some reason flex boxes are allowed to overflow.. */
 }
 
-.grid.three > *, .grid > .third {
-	width: 33.3333%;
+html {
+	font-size: 5px;
 }
 
-.grid > .thirds {
-	width: 66.6666%;
+@media (min-width: 309px) {
+  html {
+    font-size: 1.618034vw;
+  }
 }
 
-.pad0, .pad0-c > * { padding: 0; }
-.pad1, .pad1-c > * { padding: 1em; }
-.stack0, .stack0-c > * { margin-bottom: 0; }
-.stack1, .stack1-c > * { margin-bottom: 1em; }
+@media (min-width: 1730px) {
+  html {
+    font-size: 28px;
+  }
+}
 
-:last-child { margin-bottom: 0; }
-:first-child { margin-top: 0; }
+body {
+	font-size: 13px;
+}
 
-.ib { display: inline-block; }
+@media (min-width: 803px) {
+  body {
+    font-size: 1.618034vw;
+  }
+}
 
-.centered { margin-left: auto; margin-right: auto; }
+@media (min-width: 1174px) {
+  body {
+    font-size: 19px;
+  }
+}
 
 
 .ff-montserrat { font-family: Montserrat; }

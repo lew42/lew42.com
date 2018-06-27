@@ -5,4 +5,8 @@
 .flex-grow { flex-grow: 1; }
 .flex-push { margin-left: auto; }
 
+.order1 {
+	order: 1;
+}
+
 .ib.ib.ib.ib { display: inline-block; }

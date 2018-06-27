@@ -325,6 +325,16 @@ export function p(...args){
 	return new View(view_opts({ tag: "p" }, args)).append(...args);
 }
 
+export function h1(...args){
+	return new View(view_opts({ tag: "h1" }, args)).append(...args);
+}
+export function h2(...args){
+	return new View(view_opts({ tag: "h2" }, args)).append(...args);
+}
+export function h3(...args){
+	return new View(view_opts({ tag: "h3" }, args)).append(...args);
+}
+
 View.previous_captors = [];
 View.prototype.filler = filler;
 View.prototype.capturable = true;
