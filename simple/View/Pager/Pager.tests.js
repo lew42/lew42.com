@@ -16,7 +16,7 @@ Pager.tests = {
 				content: "page content"
 			},
 			tab_class_override: {
-				Tab: class Tab extends Pager.Tab {
+				Tab: class Tab extends Pager.Tab { // this is silly, for 1 instance... just use the above object literal...
 					initialize(){
 						super.initialize();
 					}
@@ -54,7 +54,13 @@ Pager.demo = function(){
 Pager.demo().appendTo(document.body);
 
 // test("pager", t => {
-	window.pager = new Pager().addClass("base");
+	window.pager = new Pager({
+		Tab: class Tab extends Pager.Tab {
+			initialize(){
+				super.initialize();
+			}
+		}
+	}).addClass("base");
 // });
 
 // pager.appendTo(document.body);

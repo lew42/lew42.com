@@ -9,7 +9,7 @@ import stacktrace from "./stacktrace.js";
 
 import TestView from "./TestView.js";
 
-View.stylesheet("/simple/Test/Test.css");
+View.stylesheet("/simple/Test/Test2.css");
 
 export default class Test {
 	constructor(...args){
@@ -17,10 +17,9 @@ export default class Test {
 			this.name = args[0];
 			this.fn = args[1];
 		} else {
+			this.trace = stacktrace()[2];
 			this.assign(...args);
 		}
-
-		if (!this.name) console.log(stacktrace());
 
 		this.tests = {};
 		this.pass = 0;
@@ -38,66 +37,29 @@ export default class Test {
 		});
 	}
 
-	render2(){
-		this.view = div().addClass('test ' + this.name).append({
-			bar: div({
-				label: div(this.label()).click(this.activate.bind(this))
-			}),
-			content: div(),
-			footer: div()
-		});
-
-		this.view.content.append(this._render.bind(this));
-
-		this.view.addClass("active");
-
-		if (this.pass > 0)
-			this.view.footer.append("Passed " + this.pass);
-		if (this.fail > 0)
-			this.view.footer.append("Failed " + this.fail);
-
-		if (!this.view.parent)
-			this.view.appendTo(this.container);
-
-		return this.view;
-	}
-
-	_render(){
-		if (this.fn){
-			return new this.TestFnView;
-		}
-	}
-
-	render_self(){
-		if (this.fn){
-			return new TestFnView({})
-		} else {
-			this.render_tests();
-		}
-	}
-
-	render_tests(){
-		// loop through
-	}
-
 	activate(){
 		window.location.hash = this.name;
 		window.location.reload();
 	}
 
 	label(){
-		return (this.match() ? "#" : "") + this.name;
+		return (this.name || this.trace.file) + (this.preview ? " preview" : "");
+	}
+
+	maybe_run(){
+		if (this.shouldRun())
+			this.run();
 	}
 
 	run(...args){
-		console.group(this.name);
+		console.group(this.label());
 		Test.set_captor(this);
 
 		if (this.fn){
 			this.fn.call(this.ctx || this, this.ctx || this, ...args);
 		} else {
 			for (const name in this.tests){
-				this.tests[name].run(...args);
+				this.tests[name].render(...args);
 			}
 		}
 
@@ -116,6 +78,9 @@ export default class Test {
 
 	add(tests){
 		var test;
+
+		if (this.fn) throw "only .fn or .tests, not both";
+
 		for (const name in tests){
 			if (this[name])
 				throw "restricted namespace " + name;

@@ -1,7 +1,7 @@
 export const server = new WebSocket("ws://" + window.location.host);
 
 server.addEventListener("open", function(){
-	console.log("server connected");
+	console.log("%cserver connected", "color: green");
 	server.send("connection!");
 });
 

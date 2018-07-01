@@ -5,12 +5,20 @@ export default class TestView extends View {
 		this.addClass(this.test.name);
 		// this.append(this.test.run.bind(this.test));
 		this.append({
-			label: div(this.test.name).click(this.test.activate.bind(this)),
+			label: div(this.test.label()).click(this.test.activate.bind(this.test)),
 			content: div()
 		});
 
 		this.content.append(() => {
-			this.test.run();
+			if (this.test.preview){
+				console.group(this.test.label());
+
+				this.test.preview();
+
+				console.groupEnd();
+			} else {
+				this.test.maybe_run();
+			}
 		});
 	}
 

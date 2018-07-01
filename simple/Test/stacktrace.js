@@ -1,7 +1,6 @@
-export default function backtrace() {
+export default function stacktrace() {
 	var stack = new Error().stack + '\n';
-
-	console.log(stack);
+	// console.log(stack);
 
 	stack = stack.replace(/^\s+(at eval )?at\s+/gm, '');
 	// console.log(stack);
