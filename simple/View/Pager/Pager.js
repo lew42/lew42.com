@@ -85,19 +85,7 @@ export default class Pager extends View {
 
 	make_page(name, value){
 		const Page = this.get_page_constructor();
-		const opts = {
-			name,
-			pager: this
-		};
-		if (is.view(value)){
-			opts.el = value.el;
-			return new Page(opts);
-		} else if (is.pojo(value)){
-			return new Page(opts, value);
-		} else {
-			opts.content = value;
-			return new Page(opts);
-		}
+		return Page.use(value, { name });
 	}
 
 	get_page_constructor(){

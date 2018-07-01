@@ -1,2 +1,4 @@
 .bg-white { background: #fff; }
 .bg-dark { background: #333; }
+
+.bg-shade1 { background-color: rgba(0,0,0,0.1); }

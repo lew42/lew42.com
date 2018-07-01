@@ -23,13 +23,9 @@ export default class View {
 
 	classify(){
 		this.addClass(this.classes);
-
-		if (!this.type && this.constructor.name !== "View"){
-			this.type = this.constructor.name.toLowerCase();
-		}
-
-		if (this.type)
-			this.addClass(this.type);
+		
+		if (this.constructor.name !== "View")
+			this.addClass(this.constructor.name);
 
 		if (this.name)
 			this.addClass(this.name);
@@ -294,7 +290,7 @@ export default class View {
 	}
 
 	static stylesheet(url){
-		return (new View({ tag: "link" })).attr("rel", "stylesheet").attr("href", url).appendTo(document.head);
+		return new View({ tag: "link" }).attr("rel", "stylesheet").attr("href", url).appendTo(document.head);
 	}
 
 	static async write(...args){
@@ -302,6 +298,46 @@ export default class View {
 		await document.ready;
 		body.el = document.body;
 		body.append(...args);
+	}
+
+	static make(props){
+		for (const prop of props){
+			this.use(props[prop], { name: prop });
+		}
+	}
+
+	static fake(n){
+		for (var i = 0; i < n; i++){
+			// make a dummy with filler...
+		}
+	}
+
+	/*
+	To append an obj:
+
+	View.make({
+		name(){ return {
+			props: "here"
+		}},
+		name: {
+			other: config,
+			content: {
+				props: "here"
+			}
+		},
+		name: div({
+			props: "here" // probably the easiest
+		})
+	})
+	*/
+	static use(value, ...args){
+		if (value instanceof View){
+			return new this({ el: value.el }, ...args);
+		} else if (is.pojo(value)) {
+			return new this(value, ...args);
+		} else {
+			return new this({ content: value }, ...args);
+		}
 	}
 }
 

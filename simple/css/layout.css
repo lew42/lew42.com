@@ -22,7 +22,7 @@ body.l .r.grid.one > * {
 .grid.three > *, 
 .grid > .third,
 body.s .r.grid.four > *,
-body.l .r.grid.two >* {
+body.l .r.grid.two > * {
 	width: 33.3333%;
 }
 
@@ -30,8 +30,15 @@ body.l .r.grid.two >* {
 	width: 66.6666%;
 }
 
-body.s .r.grid > * {
-	width: 100%;
+.grid.four > *,
+.grid > .quarter,
+body.s .r.grid.five > *,
+body.l .r.grid.three > * {
+	width: 25%;
+}
+
+.grid.pad-c > * {
+	
 }
 
 .pad0, .pad0-c > * { padding: 0; }
