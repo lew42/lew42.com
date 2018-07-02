@@ -23,9 +23,13 @@ export default class View {
 
 	classify(){
 		this.addClass(this.classes);
-		
-		if (this.constructor.name !== "View")
-			this.addClass(this.constructor.name);
+
+		var cls = this.constructor;
+
+		while (cls !== View){
+			this.addClass(cls.name.replace("View", "").toLowerCase());
+			cls = Object.getPrototypeOf(cls);
+		}
 
 		if (this.name)
 			this.addClass(this.name);
@@ -108,8 +112,10 @@ export default class View {
 		return this;
 	}
 	
-	addClass(classes){
-		classes && classes.split(" ").forEach(cls => this.el.classList.add(cls));
+	addClass(...args){
+		for (const arg of args){
+			arg && arg.split(" ").forEach(cls => this.el.classList.add(cls));
+		}
 		return this;
 	}
 

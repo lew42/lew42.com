@@ -8,8 +8,9 @@ import View, { el, div } from "../View/View.js";
 import stacktrace from "./stacktrace.js";
 
 import TestView from "./TestView.js";
+import TestPager from "./TestPager.js";
 
-View.stylesheet("/simple/Test/Test2.css");
+View.stylesheet("/simple/Test/Test.css");
 
 export default class Test {
 	constructor(...args){
@@ -32,9 +33,15 @@ export default class Test {
 	}
 
 	render(){
-		return new this.constructor.View({
-			test: this
-		});
+		if (this.fn){
+			return new this.constructor.View({
+				test: this
+			});
+		} else {
+			return new this.constructor.Pager({
+				test: this
+			});
+		}
 	}
 
 	activate(){
@@ -51,18 +58,24 @@ export default class Test {
 			this.run();
 	}
 
-	run(...args){
+	_before(){
 		console.group(this.label());
-		Test.set_captor(this);
+		Test.set_captor(this);		
+	}
 
+	run(...args){
+		this._before();
 		if (this.fn){
 			this.fn.call(this.ctx || this, this.ctx || this, ...args);
 		} else {
 			for (const name in this.tests){
-				this.tests[name].render(...args);
+				this.tests[name].run(...args);
 			}
 		}
+		this._after();
+	}
 
+	_after(){
 		Test.restore_captor();
 		console.groupEnd();
 	}
@@ -128,6 +141,7 @@ export function assert(value){
 
 Object.assign(Test, {
 	View: TestView,
+	Pager: TestPager,
 	previous_captors: [],
 	set_captor(view){
 		this.previous_captors.push(this.captor);

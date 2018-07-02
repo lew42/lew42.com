@@ -1,5 +1,5 @@
-.Breadcrumbs {
+.breadcrumbs {
 	display: flex;
 }
 
-.Breadcrumbs > * { padding: 0 0.25em; background: #eee; margin-right: 0.25em; cursor: pointer;}
+.breadcrumbs > * { padding: 0 0.25em; background: #eee; margin-right: 0.25em; cursor: pointer;}

@@ -1,0 +1,15 @@
+/* .v1 */
+.testpager { 
+	--active: #eaeaea; font-size: 13px; }
+
+.testpager > .tabs { margin-right: 0.5em; }
+.testpager > .tabs > .tab {background: #888;padding: 0.25em 0.7em;color: #d0d0d0;}
+.testpager > .tabs > .tab:hover {background: #999;}
+.testpager > .tabs > .tab.active {background: var(--active);color: #000;}
+
+.testpager > .pages {}
+.testpager > .pages > .page {}
+.testpager > .pages > .page.active {background: var(--active);}
+
+.testpager > .tabs > .tab.active,
+.testpager > .pages > .page.active { background: #eaeaea; color: #000; }

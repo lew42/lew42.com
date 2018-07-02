@@ -16,11 +16,11 @@ Pager.tests = {
 				content: "page content"
 			},
 			tab_class_override: {
-				Tab: class Tab extends Pager.Tab { // this is silly, for 1 instance... just use the above object literal...
-					initialize(){
-						super.initialize();
-					}
-				}
+				// Tab: class Tab extends Pager.Tab { // this is silly, for 1 instance... just use the above object literal...
+				// 	initialize(){
+				// 		super.initialize();
+				// 	}
+				// }
 			},
 			one: div().filler("1-2s"),
 			two: div().filler("3-5s"),
@@ -55,11 +55,11 @@ Pager.demo().appendTo(document.body);
 
 // test("pager", t => {
 	window.pager = new Pager({
-		Tab: class Tab extends Pager.Tab {
-			initialize(){
-				super.initialize();
-			}
-		}
+		// Tab: class Tab extends Pager.Tab {
+		// 	initialize(){
+		// 		super.initialize();
+		// 	}
+		// }
 	}).addClass("base");
 // });
 

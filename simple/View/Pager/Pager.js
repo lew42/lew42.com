@@ -42,10 +42,10 @@ export default class Pager extends View {
 
 	content(){ 
 		this.addClass("base");
-		return {
+		this.append({
 			tabs: div(),
 			pages: div()
-		}
+		});
 	}
 
 	/*
@@ -76,9 +76,13 @@ export default class Pager extends View {
 		}
 	})
 	*/
-	add(pages){
-		for (const name in pages){
-			this.add_page(this.make_page(name, pages[name]));
+	add(...args){
+		if (is.str(args[0])){
+			this.add_page(args[0], args[1]);
+		} else {
+			for (const name in args[0]){
+				this.add_page(name, args[0][name]);
+			}
 		}
 		return this;
 	}
@@ -88,23 +92,12 @@ export default class Pager extends View {
 		return Page.use(value, { name });
 	}
 
-	get_page_constructor(){
-		return this.Page || this.constructor.Page;
-	}
-
-	get_tab_constructor(page){
-		return page.Tab || this.Tab || this.constructor.Tab;
-	}
-
-	add_page(page){
-		const Page = this.get_page_constructor();
-		if (!(page instanceof Pager.Page)){
-			page = new Page(page, { pager: this });
-		}
+	add_page(name, value){
+		const Page = this.Page || this.constructor.Page;
+		const page = Page.use(value, { name, pager: this });
 
 		this._pages.push(page);
 		
-		page.pager = this;
 		page.render_tab();
 		page.appendTo(this.pages);
 
@@ -143,32 +136,17 @@ Pager.Page = class Page extends View {
 	}
 
 	render(){
-		this.content && this.append(this.content);
+		super.render();
 		this.rendered = true;
 	}
 
 	render_tab(){
-		const opts = {
-			page: this,
-			pager: this.pager
-		};
-
-		// allow Tab overrides
-		this.Tab = this.Tab || this.pager.Tab || this.pager.constructor.Tab;
-		
-		// use .name if no .tab value
-		this.tab = this.tab || this.name;
-
-		// view or <viewable>
-		if (is.view(this.tab)){
-			opts.el = this.tab.el;
-		} else {
-			opts.content = this.tab;
-		}
-
-		this.tab = new this.Tab(opts);
-
-		this.pager.tabs.append(this.tab);
+		this.tab = View.use(this.tab || this.name)
+			.addClass("tab")
+			.click(t => {
+				this.pager.activate(this);
+			})
+			.appendTo(this.pager.tabs);
 	}
 
 	activate(){
@@ -182,13 +160,5 @@ Pager.Page = class Page extends View {
 	deactivate(){
 		this.tab.removeClass("active");
 		this.hide().removeClass("active");
-	}
-}
-
-Pager.Tab = class Tab extends View {
-	initialize(){
-		this.click(t => {
-			this.pager.activate(this.page);
-		});
 	}
 }

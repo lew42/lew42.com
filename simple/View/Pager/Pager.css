@@ -17,7 +17,7 @@
 /* .base */
 .base.pager { display: flex; }
 
-.base.pager > .tabs { min-width: 100px; }
+.base.pager > .tabs { min-width: 125px; }
 .base.pager > .tabs > .tab { cursor: pointer; }
 .base.pager > .tabs > .tab.active {}
 
@@ -28,11 +28,10 @@
 
 /* .v1 */
 .v1.pager { 
-	--active: #eaeaea;
-	font-family: Verdana; font-size: 13px; }
+	--active: #eaeaea; font-size: 13px; }
 
-.v1.pager > .tabs {}
-.v1.pager > .tabs > .tab {background: #888;padding: 0.5em 0.75em;color: #d0d0d0;}
+.v1.pager > .tabs {  }
+.v1.pager > .tabs > .tab {background: #888;padding: 0.25em 0.7em;color: #d0d0d0;}
 .v1.pager > .tabs > .tab:hover {background: #999;}
 .v1.pager > .tabs > .tab.active {background: var(--active);color: #000;}
 
