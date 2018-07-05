@@ -131,8 +131,8 @@ Pager.Page = class Page extends View {
 
 		// if .add({ name: div() }), the div is captured elsewhere
 		// does lazy rendering affect SEO?  content that's not rendered can't be indexed...
-		if (this.content && this.content instanceof View)
-			this.render();
+		// if (this.content && this.content instanceof View)
+		// 	this.render();
 	}
 
 	render(){

@@ -1,7 +1,7 @@
 import "../livereload.js";
 import "/simple/dev/dev.js";
 import "/simple/css/css.js";
-import mixin from "../mixin.js";
+import mixin, { assign } from "../mixin.js";
 import { is } from "/simple/util.js";
 import View, { el, div } from "../View/View.js";
 
@@ -131,7 +131,7 @@ export default class Test {
 }
 
 export function test(name, value){
-	return new Test(name, value).render().appendTo(document.body);
+	return new Test(name, value).render();
 }
 
 export function assert(value){
@@ -163,4 +163,4 @@ Object.assign(Test, {
 	}
 });
 
-mixin(Test, mixin.assign);
+mixin(Test, assign);

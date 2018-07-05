@@ -4,3 +4,10 @@ body.wires { background: url("/simple/img/always-grey.png") #fff; }
 
 .img-placeholder {background: url(/simple/img/always-grey.png) rgba(0, 0, 0, 0.1);}
 .img-placeholder.dark { background-color: rgba(0,0,0,0.3); }
+
+.dev, .has-dev-drawer {--drawer-width: 40%;}
+
+.app {}
+.app.has-dev-drawer { margin-right: var(--drawer-width); }
+.dev {position: fixed;top: 0;right: 0;bottom: 0;/* overflow-y: scroll; */width: 0;background: #5d5b75;box-shadow: -1px 0px 21px rgba(0,0,0,0.4);}
+.dev.active { width: var(--drawer-width); }

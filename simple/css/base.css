@@ -42,3 +42,5 @@ body {
 .ff-verdana { font-family: Verdana; }
 .ff-tahoma { font-family: Tahoma; }
 .ff-trebuchet { font-family: "Trebuchet MS"; }
+
+.app {/* height: 100%; */flex-grow: 1;}

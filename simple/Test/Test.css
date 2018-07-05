@@ -1,1 +1,2 @@
-.test {}
+.old { background: #ddd; }
+.old .test { background: #fff; }

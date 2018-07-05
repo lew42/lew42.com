@@ -40,10 +40,12 @@ export default class View {
 	}
 
 	append(...args){
+		const container = (this.container && this.container.el) || this.el;
+
 		for (const arg of args){
 			if (arg && arg.el){
 				arg.parent = this;
-				this.el.appendChild(arg.el);
+				container.appendChild(arg.el);
 			} else if (is.pojo(arg)){
 				this.append_pojo(arg);
 			} else if (is.obj(arg)){
@@ -54,7 +56,7 @@ export default class View {
 				this.append_fn(arg);
 			} else {
 				// DOM, str, undefined, null, etc
-				this.el.append(arg);
+				container.append(arg);
 			}
 		}
 		return this;
@@ -92,13 +94,13 @@ export default class View {
 			view = (new View()).append(value);
 		}
 
+		view.addClass(prop).appendTo(this);
+
 		if (!this[prop]){
 			this[prop] = view;
 		} else {
 			console.warn(`.${prop} property is already taken`);
 		}
-
-		view.addClass(prop).appendTo(this);
 
 		return this;
 	}
@@ -187,6 +189,12 @@ export default class View {
 		return () => {
 			this.el.removeEventlistener(event, wrapper);
 		};
+	}
+
+	emit(event, detail){
+		const e = new CustomEvent(event, { detail });
+		this.el.dispatchEvent(e);
+		return this;
 	}
 
 	empty(){
@@ -300,7 +308,7 @@ export default class View {
 	}
 
 	static async write(...args){
-		const body = new View();
+		const body = new View({});
 		await document.ready;
 		body.el = document.body;
 		body.append(...args);
@@ -391,6 +399,15 @@ document.ready = new Promise((res, rej) => {
 		});
 });
 
+View.body = new View({
+	el: document.body,
+	capturable: false
+});
+
+View.app = new View().addClass("default app");
+View.set_captor(View.app);
+
+document.ready.then(() => { View.app.appendTo(document.body) });
 
 function parseToken(token){
 	if (!token)

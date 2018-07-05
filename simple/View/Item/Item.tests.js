@@ -5,6 +5,8 @@ import Icon, { icon } from "../Icon/Icon.js";
 
 import importedItem from "./item-import-test.js";
 
+View.app.addClass("old");
+
 test("inline-block flex", t => {
 	div("Lorem ipsum dolor set ", div(".ib", div(".flex", icon("beer"), div("amet"))), " adipiscing elit.")
 });

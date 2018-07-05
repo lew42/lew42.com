@@ -1,0 +1,6 @@
+.explorer {}
+.explorer > .breadcrumbs { display: flex; }
+.explorer > .breadcrumbs > * { padding: 1em; cursor: pointer; }
+.explorer > .breadcrumbs > *:not(.active) { display: none; }
+.explorer > .container > *:not(.active) { display: none; }
+.explorer > .container > .list > * { padding: 1em; cursor: pointer; }

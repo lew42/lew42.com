@@ -9,7 +9,13 @@ View.stylesheet("/simple/Test/Test.css");
 
 export default class Test {
 	constructor(...args){
-		this.assign(...args);
+		if (is.str(args[0])){
+			this.name = args[0];
+			this.fn = args[1];
+		} else {
+			this.trace = stacktrace()[2];
+			this.assign(...args);
+		}
 
 		this.tests = {};
 		this.pass = 0;
@@ -66,28 +72,26 @@ export default class Test {
 		return (this.match() ? "#" : "") + this.name;
 	}
 
+	_before(){
+		console.group(this.label());
+		Test.set_captor(this);		
+	}
+
 	run(...args){
-		if (this.name)
-			console.group(this.name);
-		
-		Test.set_captor(this);
-
+		this._before();
+		if (this.fn){
+			this.fn.call(this.ctx || this, this.ctx || this, ...args);
+		} else {
 			for (const name in this.tests){
-				const test = this.tests[name];
-				console.group(name);
-				
-				if (is.fn(test)){
-					test.call(this, this, ...args);
-				} else if (test.run){
-					test.run(...args);
-				}
-				
-				console.groupEnd();
+				this.tests[name].run(...args);
 			}
+		}
+		this._after();
+	}
 
+	_after(){
 		Test.restore_captor();
-		if (this.name)
-			console.groupEnd();
+		console.groupEnd();
 	}
 
 	assert(value){
@@ -125,7 +129,7 @@ export default class Test {
 }
 
 export function test(name, value){
-	return new Test({ name }).add(value).render().appendTo(document.body);
+	return new Test(name, value).render();
 }
 
 export function assert(value){
