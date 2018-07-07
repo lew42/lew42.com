@@ -46,15 +46,27 @@ export default class Explorer extends View {
 			const bc = div(name).appendTo(this.breadcrumbs);
 			const list = div(name).appendTo(this.page);
 
-			const route = this.router.add(name, () => {
-				value.addClass("active");
-				bc.addClass("active");
-				list.addClass("active");
-			}, () => {
-				// this.page.addClass("active");
-				value.removeClass("active");
-				bc.removeClass("active");
-				list.removeClass("active");
+			const route = this.router.add(name, {
+				on(){
+					value.addClass("active");
+					bc.addClass("active");
+					list.addClass("active");
+
+					var parent = route.parent;
+					while (parent){
+						parent.active_path();
+					}
+				},
+				off(){
+					value.removeClass("active");
+					bc.removeClass("active");
+					list.removeClass("active");
+				},
+				active_path(){
+					value.addClass("active-path");
+					bc.addClass("active-path");
+					list.addClass("activeZ");
+				}
 			});
 
 			bc.click(d => route.activate());

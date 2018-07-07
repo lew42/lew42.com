@@ -43,4 +43,4 @@ body {
 .ff-tahoma { font-family: Tahoma; }
 .ff-trebuchet { font-family: "Trebuchet MS"; }
 
-.app {/* height: 100%; */flex-grow: 1;}
+.app {/* height: 100%; */flex-grow: 1; background: #ddd; }

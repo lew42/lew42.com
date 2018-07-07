@@ -39,7 +39,7 @@ Lorem.prototype.createText = function(count, type) {
         case Lorem.TYPE.PARAGRAPH:
             var paragraphs = new Array;
             for (var i = 0; i < count; i++) {
-                var paragraphLength = this.randomInt(10, 20);
+                var paragraphLength = this.randomInt(1, 7);
                 var paragraph = this.createText(paragraphLength, Lorem.TYPE.SENTENCE);
                 paragraphs.push('<p>'+paragraph+'</p>');
             }

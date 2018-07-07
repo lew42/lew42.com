@@ -2,3 +2,5 @@
 .bg-dark { background: #333; }
 
 .bg-shade1 { background-color: rgba(0,0,0,0.1); }
+
+.card { background: #fff; border-radius: 3px; overflow: hidden; max-width: 40em; margin-left: auto; margin-right: auto;  }

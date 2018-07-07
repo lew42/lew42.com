@@ -60,6 +60,7 @@ body.l .r.grid.three > * {
 .flex-wrap { flex-wrap: wrap; }
 .flex-grow { flex-grow: 1; }
 .flex-push { margin-left: auto; }
+.mr50-c > * { margin-right: 0.5em; } 
 
 .order-1 {
 	order: -1;

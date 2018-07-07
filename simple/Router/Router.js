@@ -1,35 +1,61 @@
 import mixin, { assign, events } from "/simple/mixin.js";
 import { is } from "/simple/util.js";
-class RouteBase {
+
+export default class Route {
 	constructor(...args){
 		this.routes = {};
 		Object.assign(this, ...args);
-		this.initialize();
+		if (this.parent){
+			this.initialize();
+		} else {
+			this.initialize_router();
+		}
 	}
 
-	initialize(){}
+	initialize(){
+		this.match();
+	}
+
+	initialize_router(){
+		this.router = this;
+		this.parts = window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
+		this.remainder = this.parts.slice(0);
+		this.activate(false);
+	}
+
+	match(){
+		if (this.parent.is_active_route() && this.name === this.router.remainder[0]){
+			this.router.remainder.shift();
+			this.activate(false);
+		}
+	}
 
 	activate(push){
-		this.router.current.deactivate(this);
-		this.router.current = this;
+		this.router.active_route && this.router.active_route.deactivate();
+		this.router.active_route = this;
 		push !== false && this.push();
-		this.active = true;
+		this.classify();
 		this.on && this.on(this);
 	}
 
-	deactivate(next){
-		this.active = false;
-		this.off && this.off(this, next);
+	is_active(){
+		return this.is_active_route() || this.is_active_ancestor();
 	}
 
-	push(){
-		window.location.hash = this.path();
+	is_active_route(){
+		return this.router.active_route === this;
+	}
+
+	is_active_parent(){
+		const active_child = this.get_active_child();
+		return active_child && active_child.is_active_route();
+	}
+
+	is_active_ancestor(){
+		return this.router.active_node.is_descendant_of(this);
 	}
 
 	is_descendant_of(route){
-		if (this.parent === route)
-			return true;
-
 		var parent = this.parent;
 
 		while (parent){
@@ -41,14 +67,76 @@ class RouteBase {
 		return false;
 	}
 
-	has_active_descendant(){
-		for (const name in this.routes){
-			const route = this.routes[name];
-			if (route.active || route.has_active_descendant())
-				return true;
+	get_active_child(){
+		var next = this.router.active_route;
+		while (next){
+			if (next.parent === this)
+				return next;
+			next = next.parent;
 		}
-
 		return false;
+	}
+
+	deactivate(next){
+		this.declassify();
+		this.off && this.off(this, next);
+	}
+	
+	declassify(){
+		if (this.views){
+			for (const view of this.views){
+				view.removeClass("active active-route");
+			}
+
+			var parent = this.parent;
+
+			if (parent && parent.views)
+				for (const view of parent.views)
+					view.removeClass("active-parent");
+
+			while (parent && parent.views){
+				for (const view of parent.views){
+					view.removeClass("active active-ancestor");
+				}
+
+				parent = parent.parent;
+			}
+		}
+	}
+
+	classify(...views){
+		if (is.arr(views[0])){
+			this.views = views[0];
+		} else if (views.length){
+			this.views = views;
+		}
+		if (this.views){
+			for (const view of this.views){
+				view.addClass("active active-route");
+			}
+
+			var parent = this.parent;
+
+			if (parent && parent.views)
+				for (const view of parent.views)
+					view.addClass("active-parent");
+
+			while (parent && parent.views){
+				for (const view of parent.views){
+					view.addClass("active active-ancestor");
+				}
+
+				parent = parent.parent;
+			}
+		}
+	}
+
+	push(){
+		if (this === this.router){
+			window.history.pushState("", document.title, window.location.pathname);
+		} else {
+			window.location.hash = this.path();
+		}
 	}
 
 	add(name, on, off){
@@ -59,51 +147,8 @@ class RouteBase {
 		}
 	}
 
-	// add(routes, value1, value2){
-	// 	// .add("route_name", fn || {})
-	// 	if (is.str(routes)){
-	// 		return this.add_named(routes, value1, value2);
-
-	// 	// .add({ route_name: fn || {} })
-	// 	} else if (is.pojo(routes)) {
-	// 		return this.add_pojo(routes);
-
-	// 	} else {
-	// 		console.warn("oops");
-	// 		return this;
-	// 	}
-	// }
-
-	// add_named(name, value){
-	// 	// return new route
-	// 	if (is.fn(value)){
-	// 		return this.add_named_fn(name, value);
-	// 	} else if (is.pojo(value)){
-	// 		return this.add_named_pojo(name, value);
-	// 	} else {
-	// 		throw "only fns or pojos for now";
-	// 	}
-	// }
-
-	// add_named_pojo(name, routes){
-	// 	return this.add_route(name).add(routes);
-	// }
-
-	// add_named_fn(name, fn){
-	// 	return this.add_route(name, { fn });
-	// }
-
-	// add_pojo(routes){
-	// 	for (const name in routes){
-	// 		this.add_named(name, routes[name]);
-	// 	}
-
-	// 	// return self
-	// 	return this;
-	// }
-
 	add_route(name, props){
-		const route = new Route({
+		const route = new this.constructor({
 			name, parent: this, router: this.router
 		}, props);
 
@@ -116,161 +161,23 @@ class RouteBase {
 		return route;
 	}
 
-	part(){}
-	path(){}
-}
-
-class Route extends RouteBase {
-	initialize(){
-		this.match();
-	}
-
-	match(){
-		if (this.parent.active && this.name === this.router.remainder[0]){
-			this.router.remainder.shift();
-			this.activate(false);
-		}
-	}
-
 	part(){
 		return this.name.replace(/_/g, "-");
+	}
+	
+	path(){
+		return "/" + this.parts().join("/") + "/";
 	}
 
 	parts(){
 		var parent = this.parent;
 		const parts = [this.part()];
 
-		while (parent && parent.part()){
+		while (parent && parent !== this.router){
 			parts.unshift(parent.part());
 			parent = parent.parent;
 		}
 
 		return parts;
 	}
-
-	path(){
-		return "/" + this.parts().join("/") + "/";
-	}
 }
-
-export class Router extends RouteBase {
-	initialize(){
-		this.router = this;
-		this.root = true;
-		this.parts = window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
-		this.remainder = this.parts;
-		this.current = this;
-		this.activate(false);
-	}
-
-	push(push){
-		if (push !== false){
-			window.history.pushState("", document.title, window.location.pathname);
-		}
-	}
-
-	part(){
-		return false;
-	}
-
-	path(){
-		return false
-	}
-}
-
-export default class Routerx {
-	constructor(...args){
-		this.routes = {};
-		
-		Object.assign(this, ...args);
-
-		if (this.name){
-			this.initialize();
-		} else {
-			this.root = true;
-			this.active = true;
-			this.router = this;
-			this.current = this;
-			this.set_parts();
-			this.remainder = this.parts;
-		}
-	}
-
-	set_parts(){
-		this.parts = window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
-	}
-
-	initialize(){
-		this.view.activate = function activate(push){
-			return this.emit("activate", push);
-		};
-
-		this.view.on("activate", this.activate.bind(this));
-
-		this.match();
-	}
-
-	deactivate(){
-		this.view && this.view.removeClass("active").emit("deactivate");
-	}
-
-	activate(view, e){
-		this.active = true;
-		this.router.current.deactivate();
-		this.router.current = this;
-		this.view.addClass("active");
-		// this.add_active_path_classes();
-		this.push(e.detail);
-	}
-
-	add_active_path_classes(){
-
-	}
-
-	push(push){
-		if (push !== false){
-			window.location.hash = this.path();
-			this.set_parts();
-		}
-	}
-
-	add(routes){
-		for (const name in routes){
-			this.add_route(name, routes[name]);
-		}
-		return this;
-	}
-
-	add_route(name, view){
-		return this.routes[name] = new Routerx({ name, view,  parent: this,  router: this.router });
-	}
-
-	match(){
-		if (!this.parent || this.parent.active){
-			if (this.part() === this.router.remainder[0]){
-				this.router.remainder.shift();
-				this.view.activate(false);
-			}
-		} else {
-			return false;
-		}
-	}
-
-	part(){
-		return this.name.replace("_", "-");
-	}
-
-	path(){
-		var parent = this.parent;
-		const path = [this.part()];
-
-		while (parent){
-			parent.part && path.unshift(parent.part);
-			parent = parent.parent;
-		}
-
-		return "/" + path.join("/") + "/";
-	}
-}
-
-mixin(Router, assign, events);
