@@ -1,5 +1,5 @@
 .well1 {background: #eee;}
-.pp1 > * { --pp1: 1em; margin-left: var(--pp1); margin-right: var(--pp1); }
+.pp1 > * {--pp1: 1rem;margin-left: var(--pp1);margin-right: var(--pp1);}
 .pp1 > *:first-child { margin-top: var(--pp1); }
 .pp1 > *:last-child { margin-bottom: var(--pp1); }
 
@@ -40,4 +40,4 @@ And how about sizes?   And reusable margins across different styles?
 .pad0 { padding: 0; }
 .pp { padding: 1px 0; }
 
-.full2 { background: #555; color: #ccc; padding: 1rem; }
+.full2 {background: #555;color: #ccc;padding: 1rem;/* padding: 1em; */}

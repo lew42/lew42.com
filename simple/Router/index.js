@@ -124,7 +124,9 @@ class Custom extends Router {
 		div("content for " + this.name);
 	}
 
-	on(){
+	_activate(){
+		this.activate_route();
+
 		if (!this.page){
 				// 1					// 2
 			this.page = div(".page").appendTo(this.router.pages); // this reference needs to be in place before child routes can be added
@@ -134,7 +136,11 @@ class Custom extends Router {
 			
 			// 4
 			this.page.append(this.content.bind(this));
+		} else {
+			this.classify();
 		}
+
+		this.emit("activate", this);
 	}
 
 	make(n){

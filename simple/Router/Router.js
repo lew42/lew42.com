@@ -4,7 +4,7 @@ import { is } from "/simple/util.js";
 export default class Route {
 	constructor(...args){
 		this.routes = {};
-		Object.assign(this, ...args);
+		this.assign(...args);
 		if (this.parent){
 			this.initialize();
 		} else {
@@ -20,22 +20,53 @@ export default class Route {
 		this.router = this;
 		this.parts = window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
 		this.remainder = this.parts.slice(0);
-		this.activate(false);
+		this._skip_push	= true;
+		this.activate();
 	}
 
 	match(){
 		if (this.parent.is_active_route() && this.name === this.router.remainder[0]){
 			this.router.remainder.shift();
-			this.activate(false);
+			this._skip_push = true;
+			this.activate();
 		}
 	}
 
-	activate(push){
+
+	get activate(){
+		return this._activate;
+	}
+
+	set activate(value){
+		this.on("activate", value);
+	}
+
+	_activate(){
+		this.activate_route();
+		this.classify();
+		this.emit("activate", this);
+	}
+
+	/*
+	// or
+	activate(){
+		this.activate_route();
+		this.classify();
+		this.activated();
+	}
+
+	// or
+	activate(){
+		// pre
+		super.activate();
+		// post
+	}
+	*/
+
+	activate_route(push){
 		this.router.active_route && this.router.active_route.deactivate();
 		this.router.active_route = this;
-		push !== false && this.push();
-		this.classify();
-		this.on && this.on(this);
+		this.push();
 	}
 
 	is_active(){
@@ -77,9 +108,17 @@ export default class Route {
 		return false;
 	}
 
-	deactivate(next){
+	get deactivate(){
+		return this._deactivate;
+	}
+
+	set deactivate(cb){
+		this.on("deactivate", cb);
+	}
+
+	_deactivate(){
 		this.declassify();
-		this.off && this.off(this, next);
+		this.emit("deactivate", this);
 	}
 	
 	declassify(){
@@ -132,6 +171,11 @@ export default class Route {
 	}
 
 	push(){
+		if (this._skip_push){
+			this._skip_push = false;
+			return false;
+		}
+
 		if (this === this.router){
 			window.history.pushState("", document.title, window.location.pathname);
 		} else {
@@ -139,11 +183,11 @@ export default class Route {
 		}
 	}
 
-	add(name, on, off){
-		if (is.pojo(on)){
-			return this.add_route(name, on);
-		} else if (is.fn(on)) {
-			return this.add_route(name, { on, off })
+	add(name, activate, deactivate){
+		if (is.pojo(activate)){
+			return this.add_route(name, activate);
+		} else if (is.fn(activate)) {
+			return this.add_route(name, { activate, deactivate })
 		}
 	}
 
@@ -181,3 +225,5 @@ export default class Route {
 		return parts;
 	}
 }
+
+mixin(Route, assign, events);

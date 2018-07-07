@@ -11,6 +11,7 @@ export const assign = {
 
 export const events = {
 	on(event, cb){
+		if (!cb) return this;
 		this._events = this._events || {};
 		(this._events[event] = this._events[event] || []).push(cb);
 		return this;
