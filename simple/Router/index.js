@@ -3,6 +3,8 @@ import View, {el, div, p, h3 } from "/simple/View/View.js";
 import { icon } from "/simple/View/Icon/Icon.js";
 import "/simple/Test/Test.js";
 
+import controls from "/simple/dev/controls.js";
+
 // const router = new Routerx();
 
 // ["one", "two", "three"].forEach(v => {
@@ -16,25 +18,7 @@ import "/simple/Test/Test.js";
 // router.routes.two.add_route("two_sub", div("two sub").click(d => d.activate()));
 
 // console.log(router);
-
-el("style",
-	".explorer { font-family: Tahoma; margin: 2em auto 3em; max-width: 40em; border-radius: 3px; margin-left: auto; margin-right: auto; }",
-	".explorer > .pages { padding: 0.5em 0.75em; background: #f0f0f0; border-radius: 3px; overflow: hidden; box-shadow: 1px 1px 1px rgba(0,0,0,0.1); }",
-	".explorer > .pages > * { padding: 0.5em; box-sizing: border-box; }",
-	".explorer.tab-like > .pages > .active-parent { min-width: 30%; padding: 0; }",
-	".explorer.tab-like > .pages {}",
-	".tabs > .active { background: #eee }",
-	".tabs > .active-route { background: #e05300; color: #eee; }",
-	".tabs > .active-parent { background: #ccc; }",
-	".tabs > :not(.active):not(.active-ancestor) { display: none;}",
-	".tabs { box-shadow: 1px 1px 1px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; background: #f0f0f0; margin-bottom: 8px; border-radius: 3px; overflow: hidden; }",
-	".tabs > * { cursor: pointer; padding: 0.25em 0.5em; }",
-	".explorer:not(.split) > .pages > :not(.active-route) { display: none; }", 
-	".explorer.split > .pages > :not(.active-route):not(.active-parent) { display: none; }",
-	".explorer.split > .pages { display: flex; }",
-	".explorer.split > .pages > * { min-width: 50%; }",
-	".pages > * > .link { padding: 0.5em 0.75em; cursor: pointer; background: #fff; }",
-	"span.link { background: #555; color: white; cursor: pointer; padding: 0.1em 0.3em; border-radius: 3px; }");
+View.stylesheet("/simple/Router/router.css");
 
 
 class Explorer extends Router {
@@ -85,12 +69,14 @@ class Explorer extends Router {
 		return this;
 	}
 }
-
-div(".flex.mr50-c", 
-	div("split").click(() => router.view.toggleClass("split")),
-	div("tab-like").click(() => router.view.toggleClass("tab-like"))
-);
 window.router = new Explorer().make(9);
+
+View.dev.append(() => {
+	div(".controls.flex.mr50-c", 
+		controls.toggle(router.view, "split"),
+		controls.toggle(router.view, "tab-like")
+	);
+});
 
 class Custom extends Router {
 	initialize_router(){

@@ -1,0 +1,20 @@
+.explorer { font-family: Tahoma; margin: 2em auto 3em; max-width: 40em; border-radius: 3px; margin-left: auto; margin-right: auto; }
+.explorer > .pages { padding: 0.5em 0.75em; background: #f0f0f0; border-radius: 3px; overflow: hidden; box-shadow: 1px 1px 1px rgba(0,0,0,0.1); }
+.explorer > .pages > * { padding: 0.5em; box-sizing: border-box; }
+.explorer.tab-like > .pages > .active-parent { min-width: 30%; padding: 0; }
+.explorer.tab-like > .pages {}
+.tabs > .active { background: #eee }
+.tabs > .active-route { background: #e05300; color: #eee; }
+.tabs > .active-parent { background: #ccc; }
+.tabs > :not(.active):not(.active-ancestor) { display: none;}
+.tabs { box-shadow: 1px 1px 1px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; background: #f0f0f0; margin-bottom: 8px; border-radius: 3px; overflow: hidden; }
+.tabs > * { cursor: pointer; padding: 0.25em 0.5em; }
+.explorer:not(.split) > .pages > :not(.active-route) { display: none; }
+.explorer.split > .pages > :not(.active-route):not(.active-parent) { display: none; }
+.explorer.split > .pages { display: flex; }
+.explorer.split > .pages > * { min-width: 50%; }
+.pages > * > .link { padding: 0.5em 0.75em; cursor: pointer; background: #fff; }
+span.link { background: #555; color: white; cursor: pointer; padding: 0.1em 0.3em; border-radius: 3px; }
+
+.controls  { margin: 1em; }
+.controls > * { background: #fff; border-radius: 3px; cursor: pointer; padding: 0.25em 0.5em; margin-right: 0.5em; }

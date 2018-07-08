@@ -16,14 +16,6 @@ export default class Route {
 		this.match();
 	}
 
-	initialize_router(){
-		this.router = this;
-		this.parts = window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
-		this.remainder = this.parts.slice(0);
-		this._skip_push	= true;
-		this.activate();
-	}
-
 	match(){
 		if (this.parent.is_active_route() && this.name === this.router.remainder[0]){
 			this.router.remainder.shift();
@@ -32,6 +24,13 @@ export default class Route {
 		}
 	}
 
+	initialize_router(){
+		this.router = this;
+		this.parts = window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
+		this.remainder = this.parts.slice(0);
+		this._skip_push	= true;
+		this.activate();
+	}
 
 	get activate(){
 		return this._activate;
@@ -46,6 +45,8 @@ export default class Route {
 		this.classify();
 		this.emit("activate", this);
 	}
+
+	// activated(){}
 
 	/*
 	// or
