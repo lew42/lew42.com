@@ -1,6 +1,14 @@
 import mixin, { assign, events } from "/simple/mixin.js";
 import { is } from "/simple/util.js";
 
+
+class HashPath {
+	constructor(){
+
+	}
+}
+
+
 export default class Route {
 	constructor(...args){
 		this.routes = {};
@@ -12,15 +20,32 @@ export default class Route {
 		}
 	}
 
+	__push(){
+		this.hashpath.push();
+	}
+
+	__match(){
+		this.hashpath === this.router.next
+	}
+
 	initialize(){
 		this.match();
 	}
 
 	match(){
+		// if (!this.router.)
 		if (this.parent.is_active_route() && this.name === this.router.remainder[0]){
 			this.router.remainder.shift();
 			this._skip_push = true;
 			this.activate();
+		}
+	}
+
+	is_match(){
+		if (this.lazy){
+
+		} else {
+			return this.parent.is_active_route() && this.name === this.router.remainder[0];
 		}
 	}
 
@@ -32,10 +57,30 @@ export default class Route {
 		this.activate();
 	}
 
+	// get parent(){
+	// 	return this._parent;
+	// }
+
+	// set parent(parent){
+	// 	this._parent = parent;
+	// 	this.initialize();
+	// }
+
+	/*
+
+	.activate(cb) -> on("activate", cb);
+	.activate() -> emit("activate")
+
+	*/
+
 	get activate(){
 		return this._activate;
 	}
 
+	/* 
+	 * 
+	 * 
+	 **/
 	set activate(value){
 		this.on("activate", value);
 	}
@@ -59,7 +104,7 @@ export default class Route {
 	// or
 	activate(){
 		// pre
-		super.activate();
+		super.activate();   // won't work when instantiating, only extending
 		// post
 	}
 	*/
@@ -185,10 +230,16 @@ export default class Route {
 	}
 
 	add(name, activate, deactivate){
-		if (is.pojo(activate)){
+		if (is.pojo(name)){
+			for (const n in name){
+				this.add(n, name[n]);
+			}
+		} else if (is.pojo(activate)){
 			return this.add_route(name, activate);
 		} else if (is.fn(activate)) {
 			return this.add_route(name, { activate, deactivate })
+		} else {
+			return this.add_route(name);
 		}
 	}
 

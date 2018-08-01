@@ -1,3 +1,73 @@
+Test x Router
+Each test's name becomes its route path.  But how do you nest them?
+
+A default router?  Test.prototype.router = new Router();
+And then if a test has added tests, then we override the test.router?
+
+Or, we use a Test.router, to be the root path.
+And each Test gets its own .route equal to its name.
+And if each route is initialized independently, then we only initialize the route when we try to run the test.
+
+
+Should tests auto-run if their route is matched?
+Or, tests must be rendered to initialize routing?
+You'd basically render all the tests, which activates the route, and if the route matches, then they'll run, otherwise they're skipped.  But either way, their presence is rendered, so you can click it.
+
+
+Allow lazy loading of test?  test.load("./import-path.js");
+	// sets this test as captor indefinitely? or for one new Test()?
+
+
+test.run() // => returns a report
+test.render() // => creates a view, and calls .run() within the view
+
+
+test("name", t => {
+	// auto render?
+});
+
+if these are captured by the current View.captor...?
+Also, can you collect/group these named tests, and add them to another test suite?
+You could convert them to named tests...
+
+==>  new Test().add({
+	name(){
+		// put code here
+	}
+});
+
+
+or just 
+
+test("name", t => {}); // to
+new Test("name", t => {});
+
+
+
+
+export default function(){
+	...
+}
+
+import something from "./something.js";
+
+something(); // just run the fn
+
+new Test({
+	something, // add as fixture
+}).add({
+	something, // add to .tests
+})
+
+
+
+export default new Test("something", t => {
+	
+});
+
+
+
+
 REquirements
 
 - encapsulate and export tests

@@ -110,7 +110,7 @@ class Custom extends Router {
 		div("content for " + this.name);
 	}
 
-	_activate(){
+	_activate2(){
 		this.activate_route();
 
 		if (!this.page){
@@ -127,6 +127,24 @@ class Custom extends Router {
 		}
 
 		this.emit("activate", this);
+	}
+
+	_activate(){
+		this.render_page();
+		super._activate();
+	}
+
+	render_page(){
+		if (!this.page){
+				// 1					// 2
+			this.page = div(".page").appendTo(this.router.pages); // this reference needs to be in place before child routes can be added
+			
+			// 3
+			this.views = [this.tab, this.preview, this.page];
+			
+			// 4
+			this.page.append(this.content.bind(this));
+		}
 	}
 
 	make(n){
