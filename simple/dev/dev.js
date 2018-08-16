@@ -1,3 +1,4 @@
+import "./livereload.js";
 import View, { el, div } from "/simple/View/View.js";
 import store from "/simple/store/store.js";
 import { is } from "/simple/util.js";
