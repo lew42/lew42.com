@@ -1,0 +1,23 @@
+body { margin: 0; background: #ddd; }
+
+.explorer {}
+.explorer > .tabs {display: flex;margin-bottom: 0.25em;}
+
+.explorer > .tabs > .tab {
+    background: #eee;
+    padding: 0.2em 0.4em;
+    margin-right: 0.25em;
+}
+
+.explorer > .tabs > .tab:not(.active) {
+    display: none;
+}
+
+.explorer > .pages > .page:not(.active-page) {
+    display: none;
+}
+
+.explorer > .pages > .page {
+    background: #fff;
+    padding: 0.25em 0.5em;
+}

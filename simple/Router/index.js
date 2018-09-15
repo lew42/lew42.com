@@ -5,6 +5,8 @@ import "/simple/Test/Test.js";
 
 import controls from "/simple/dev/controls.js";
 
+import "./test1.js";
+
 // const router = new Routerx();
 
 // ["one", "two", "three"].forEach(v => {
@@ -47,7 +49,7 @@ class Explorer extends Router {
 
 			const tab = div(".tab", name).appendTo(this.router.tabs).click(() => route.activate());
 			const link = div(".link.sep-all", name).appendTo(this.page).click(() => route.activate());
-
+			
 			const route = this.add(name, function(){
 				if (!this.rendered){
 					this.page = div(".page", el("h3", this.name)).appendTo(this.router.pages);
@@ -206,3 +208,26 @@ custom.add("test3", {
 		exp.view.addClass("split");
 	}
 });
+
+class Explorer2 extends View {
+
+}
+
+function render_explorer2(){
+	var tabs, tab, pages, page;
+	const exp2 = div(".explorer.explorer2", 
+		tabs = div(".tabs.sep-all-c",
+			tab = icon("circle").addClass("tab").click(() => exp2.activate())
+		),
+		pages = div(".pages", 
+			page = div(".page.router-page")
+		)
+	);
+
+	const router = new Router({
+		initialize(){
+			this.views = [tab, page];
+			Router.prototype.initialize_router.call(this);
+		}
+	});
+}

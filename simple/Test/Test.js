@@ -12,7 +12,7 @@ export default class Test {
 			this.name = args[0];
 			this.fn = args[1];
 		} else {
-			this.trace = stacktrace()[2];
+			// this.trace = stacktrace()[2];
 			this.assign(...args);
 		}
 
@@ -123,7 +123,11 @@ export default class Test {
 	}
 
 	addClass(){
-		this.current.addClass(...args);
+		this.current.addClass(...arguments);
+	}
+
+	assign(){
+		return Object.assign(this, ...arguments);
 	}
 }
 

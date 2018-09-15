@@ -1,52 +1,29 @@
-import mixin, { assign, events } from "/simple/mixin.js";
 import { is } from "/simple/util.js";
 
-
-class HashPath {
+export default class Router {
 	constructor(){
-
-	}
-}
-
-
-export default class Route {
-	constructor(...args){
 		this.routes = {};
-		this.assign(...args);
+		this.assign(...arguments);
 		if (this.parent){
-			this.initialize();
+			this.initialize_route();
 		} else {
 			this.initialize_router();
 		}
 	}
 
-	__push(){
-		this.hashpath.push();
-	}
-
-	__match(){
-		this.hashpath === this.router.next
-	}
-
-	initialize(){
+	initialize_route(){
 		this.match();
 	}
 
 	match(){
-		// if (!this.router.)
-		if (this.parent.is_active_route() && this.name === this.router.remainder[0]){
+		if (this.is_match()){
 			this.router.remainder.shift();
-			this._skip_push = true;
 			this.activate(false);
 		}
 	}
 
 	is_match(){
-		if (this.lazy){
-
-		} else {
-			return this.parent.is_active_route() && this.name === this.router.remainder[0];
-		}
+		return this.parent.is_active_route() && this.name === this.router.remainder[0];
 	}
 
 	initialize_router(){
@@ -62,63 +39,16 @@ export default class Route {
 		this.activate(false);
 	}
 
-	// get parent(){
-	// 	return this._parent;
-	// }
-
-	// set parent(parent){
-	// 	this._parent = parent;
-	// 	this.initialize();
-	// }
-
-	/*
-
-	.activate(cb) -> on("activate", cb);
-	.activate() -> emit("activate")
-
-	*/
-
-	get activate(){
-		return this._activate;
-	}
-
-	/* 
-	 * 
-	 * 
-	 **/
-	set activate(value){
-		this.on("activate", value);
-	}
-
-	_activate(push = true){
+	activate(push = true){
 		this.activate_route(push);
-		this.classify();
-		this.emit("activate", this);
 	}
-
-	// activated(){}
-
-	/*
-	// or
-	activate(){
-		this.activate_route();
-		this.classify();
-		this.activated();
-	}
-
-	// or
-	activate(){
-		// pre
-		super.activate();   // won't work when instantiating, only extending
-		// post
-	}
-	*/
 
 	activate_route(push = true){
 		this.router.active_route && this.router.active_route.deactivate();
 		this.router.active_route = this;
 		push && this.push();
 	}
+
 
 	is_active(){
 		return this.is_active_route() || this.is_active_ancestor();
@@ -159,76 +89,18 @@ export default class Route {
 		return false;
 	}
 
-	get deactivate(){
-		return this._deactivate;
-	}
-
-	set deactivate(cb){
-		this.on("deactivate", cb);
-	}
-
-	_deactivate(){
-		this.declassify();
-		this.emit("deactivate", this);
-	}
-	
-	declassify(){
-		if (this.views){
-			for (const view of this.views){
-				view.removeClass("active active-route");
-			}
-
-			var parent = this.parent;
-
-			if (parent && parent.views)
-				for (const view of parent.views)
-					view.removeClass("active-parent");
-
-			while (parent && parent.views){
-				for (const view of parent.views){
-					view.removeClass("active active-ancestor");
-				}
-
-				parent = parent.parent;
-			}
-		}
-	}
-
-	classify(...views){
-		if (is.arr(views[0])){
-			this.views = views[0];
-		} else if (views.length){
-			this.views = views;
-		}
-		if (this.views){
-			for (const view of this.views){
-				view.addClass("active active-route");
-			}
-
-			var parent = this.parent;
-
-			if (parent && parent.views)
-				for (const view of parent.views)
-					view.addClass("active-parent");
-
-			while (parent && parent.views){
-				for (const view of parent.views){
-					view.addClass("active active-ancestor");
-				}
-
-				parent = parent.parent;
-			}
-		}
+	deactivate(){
+		this.deactivate_route();
 	}
 
 	push(){
 		if (this === this.router){
-			// clear hash
 			window.history.pushState("", document.title, window.location.pathname);
 		} else {
 			window.location.hash = this.path();
 		}
 	}
+
 
 	add(name, activate, deactivate){
 		if (is.pojo(name)){
@@ -277,6 +149,8 @@ export default class Route {
 
 		return parts;
 	}
-}
 
-mixin(Route, assign, events);
+	assign(){
+		return Object.assign(this, ...arguments);
+	}
+}

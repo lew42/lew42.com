@@ -1,7 +1,7 @@
 import simple, { View, el, div, p, h1, h2, h3, icon, test, assert, write } from "/simple/simple.js";
 
 import Pager from "/simple/View/Pager2/Pager.js";
-import { Router } from "/simple/Router/Router.js";
+import Router from "/simple/Router/Router.js";
 
 View.stylesheet("/simple/ui/explorer/explorer.css");
 

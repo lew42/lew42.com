@@ -8,12 +8,13 @@ export default class View {
 
 	instantiate(...args){
 		this.assign(...args);
-		this.prerender();
-		this.render();
 		this.initialize();
 	}
 
-	initialize(){}
+	initialize(){
+		this.prerender();
+		this.render();
+	}
 
 	prerender(){
 		this.el = this.el || document.createElement(this.tag || "div");

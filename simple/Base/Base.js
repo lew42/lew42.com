@@ -13,4 +13,9 @@ export default class Base {
 	assign(...args){
 		return Object.assign(this, ...args);
 	}
+
+	static mixin(){
+		this.prototype.assign(...arguments);
+		return this;
+	}
 }

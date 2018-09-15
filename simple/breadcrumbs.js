@@ -4,6 +4,8 @@ View.stylesheet("/simple/css/breadcrumbs.css");
 
 class Breadcrumbs extends View {
 	initialize(){
+		this.prerender();
+		this.render();
 		if (!this.parent) this.appendTo(document.body);
 	}
 
