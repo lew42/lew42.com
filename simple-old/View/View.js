@@ -1,4 +1,4 @@
-import { is } from "../util.js";
+import { is, obj } from "../util.js";
 import filler from "./filler.js";
 
 export default class View {
@@ -356,42 +356,48 @@ export default class View {
 	}
 }
 
-export function el(tag, ...args){
-	return new View({ tag }).append(...args);
+export function el(token, ...args){
+	return new View(parseToken(token)).append(...args);
 }
 
-export function div(){
-	return new View().append(...arguments);
+function view_opts(opts, args){
+	if (is.str(args[0]) && args[0][0] === "."){
+		opts.classes = args[0].split(".").slice(1).join(" ");
+		args.shift();
+	}
+	return opts;
 }
 
-export function p(){
-	return el("p", ...arguments);
+export function div(...args){
+	return new View(view_opts({}, args)).append(...args);
 }
 
-export function h1(){
-	return el("h1", ...arguments);
+export function p(...args){
+	return new View(view_opts({ tag: "p" }, args)).append(...args);
 }
 
-export function h2(){
-	return el("h2", ...arguments);
+export function h1(...args){
+	return new View(view_opts({ tag: "h1" }, args)).append(...args);
 }
-
-export function h3(){
-	return el("h3", ...arguments);
+export function h2(...args){
+	return new View(view_opts({ tag: "h2" }, args)).append(...args);
+}
+export function h3(...args){
+	return new View(view_opts({ tag: "h3" }, args)).append(...args);
 }
 
 View.previous_captors = [];
 View.prototype.filler = filler;
 View.prototype.capturable = true;
 
+
 document.ready = new Promise((res, rej) => {
-	if (/comp|loaded/.test(document.readyState)){
+	if (/comp|loaded/.test(document.readyState))
 		res(document.body);
-	} else {
+	else
 		document.addEventListener("DOMContentLoaded", () => {
 			res(document.body);
 		});
-	}
 });
 
 View.body = new View({
@@ -402,4 +408,24 @@ View.body = new View({
 View.app = new View().addClass("default app");
 View.set_captor(View.app);
 
-document.ready.then(() => View.app.appendTo(document.body));
+document.ready.then(() => { View.app.appendTo(document.body) });
+
+function parseToken(token){
+	if (!token)
+		throw "must provide element token";
+
+	const parts = token.split(".");
+	const results = {};
+
+	if (parts[0] !== "")
+		results.tag = parts.shift();
+
+	if (parts.length)
+		results.classes = parts.join(" ");
+
+	return results;
+}
+
+is.view = function(value){
+	return value && is.dom(value.el);
+}

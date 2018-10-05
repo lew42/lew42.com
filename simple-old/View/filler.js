@@ -1,3 +1,5 @@
+import View from "/simple/View/View.js";
+
 //Create a class named Lorem and constructor
 function Lorem() {
     //Default values.
