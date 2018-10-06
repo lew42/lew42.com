@@ -40,7 +40,10 @@ export default class View {
 		this.content && this.append(this.content);
 	}
 
-	append(...args){
+	append_with(ctx, ...args){
+		if (!ctx)
+			debugger;
+		ctx = ctx || this;
 		const container = (this.container && this.container.el) || this.el;
 
 		for (const arg of args){
@@ -48,13 +51,13 @@ export default class View {
 				arg.parent = this;
 				container.appendChild(arg.el);
 			} else if (is.pojo(arg)){
-				this.append_pojo(arg);
+				this.append_pojo(arg, ctx);
 			} else if (is.obj(arg)){
-				this.append_obj(arg);
+				this.append_obj(arg, ctx);
 			} else if (is.arr(arg)){
-				this.append.apply(this, arg);
+				this.append_with.apply(ctx, arg);
 			} else if (is.fn(arg)){
-				this.append_fn(arg);
+				this.append_fn(arg, ctx);
 			} else {
 				// DOM, str, undefined, null, etc
 				container.append(arg);
@@ -63,36 +66,41 @@ export default class View {
 		return this;
 	}
 
-	append_fn(fn){
+	append(){
+		return this.append_with(this, ...arguments);
+	}
+
+	append_fn(fn, ctx){
 		View.set_captor(this);
-		const returnValue = fn.call(this, this);
+		const returnValue = fn.call(ctx || this, this);
 		View.restore_captor();
 
 		if (is.def(returnValue))
-			this.append(returnValue);
+			this.append_with(ctx, returnValue);
 
 		return this;
 	}
 
-	append_obj(obj){
+	append_obj(obj, ctx){
 		if (!obj.render) throw "objects must have .render method";
-		this.append(obj.render());
+		this.append_with(ctx, obj.render());
+		console.error("append_with?");
 	}
 
-	append_pojo(pojo){
+	append_pojo(pojo, ctx){
 		for (const prop in pojo){
-			this.append_prop(prop, pojo[prop]);
+			this.append_prop(prop, pojo[prop], ctx);
 		}
 		
 		return this;
 	}
 
-	append_prop(prop, value){
+	append_prop(prop, value, ctx){
 		var view;
 		if (value && value.el){
 			view = value;
 		} else {
-			view = (new View()).append(value);
+			view = (new View()).append_with(ctx, value);
 		}
 
 		view.addClass(prop).appendTo(this);
