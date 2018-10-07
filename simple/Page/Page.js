@@ -7,6 +7,8 @@ import View, {el, div} from "/simple/View/View.js";
 Route:Page must stay 1:1
 */
 
+View.stylesheet("/simple/Page/Pager.css");
+
 export default class Page {
 	constructor(){
 		this.assign(...arguments);
@@ -14,6 +16,8 @@ export default class Page {
 	}
 
 	initialize(){
+		this.views = [];
+
 		if (!this.parent){
 			this.initialize_pager();
 		} else {
@@ -23,18 +27,23 @@ export default class Page {
 
 	initialize_pager(){
 		this.pager = this;
-		this.route = new Router({
-			name: this.name
-		});
 		this.prerender_pager();
-	}
-
-	initialize_page(){
-		this.route = this.parent.route.add(this.name, {
+		this.route = new Router({
+			name: this.name,
 			activated: () => this.activated(),
 			deactivated: () => this.deactivated()
 		});
+	}
+
+	initialize_page(){
 		this.prerender_page();
+		this.route = this.parent.route.add(this.name, {
+			activated: () => this.activated(),
+			deactivated: () => this.deactivated(),
+			auto_init: false
+		});
+
+		this.route.initialize();
 	}
 
 	prerender_pager(){
@@ -99,24 +108,32 @@ export default class Page {
 			this.rendered = true;
 		}
 
-		// this.classify();
+		this.classify();
 	}
 
 	deactivated(){
-		// this.classify(false);
+		console.log("declassify", this.name);
+		this.classify(false);
 	}
 
 	render(){
-		this.view = div().addClass("page").append(this.content).appendTo(this.pager.view.pages);
+		this.view = div().addClass("page").append(this.content.bind(this)).appendTo(this.pager.view.pages);
+		this.views.push(this.view);
 	}
 
-	add(name, props){
+	btn(){
+		const btn = div(this.name).click(() => this.route.activate());
+		this.views.push(btn);
+		return btn;
+	}
+
+	add(name, content){
 		if (is.pojo(name)){
 			for (const n in name){
 				this.add_page(n, { content: name[n] });
 			}
 		} else {
-			this.add_page(name, { content: props} );
+			this.add_page(name, { content } );
 		}
 	}
 
@@ -124,6 +141,34 @@ export default class Page {
 		const page = new this.constructor({
 			name, parent: this, pager: this.pager
 		}, props);
+	}
+
+	classify(add = true){
+		for (const view of this.views){
+			view[add ? "addClass" : "removeClass"]("active active-page");
+		}
+
+		var parent = this.parent;
+
+		if (parent)
+			parent.classify_as_active_parent(add);
+
+		while (parent){
+			parent.classify_as_active_ancestor(add);
+			parent = parent.parent;
+		}
+	}
+
+	classify_as_active_parent(add = true){
+		for (const view of this.views){
+			view[add ? "addClass" : "removeClass"]("active-parent");
+		}
+	}
+
+	classify_as_active_ancestor(add = true){
+		for (const view of this.views){
+			view[add ? "addClass" : "removeClass"]("active active-ancestor");
+		}
 	}
 
 	assign(){

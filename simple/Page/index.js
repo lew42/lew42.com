@@ -6,7 +6,22 @@ const page = new Page({
 });
 
 page.add("one", function(){
-	div("hello world");
+	div("one content");
+	
+	this.add({
+		one_1(){
+			div("one_1 content?")
+		},
+		one_2(){
+			div("one_2 content");
+
+			this.add({
+				one_2_1(){
+					div("one_2_1 content");
+				}
+			})
+		}
+	})
 });
 
 page.add("two", function(){

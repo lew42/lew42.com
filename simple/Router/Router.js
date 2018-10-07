@@ -3,16 +3,14 @@ import is from "/simple/is/is.js";
 export default class Router {
 	constructor(){
 		this.assign(...arguments);
-		this.initialize();
-	}
 
-	initialize(){
 		this.routes = {};
 
-		if (!this.parent)
+		if (!this.parent){
 			this.initialize_router();
-		else
-			this.initialize_route();
+		} else if (this.auto_init){
+			this.initialize();
+		}
 	}
 
 	initialize_router(){
@@ -26,7 +24,7 @@ export default class Router {
 		this.activate(false);
 	}
 
-	initialize_route(){
+	initialize(){
 		if (this.parent.hash && this.parent.hash.length)
 			this.match();
 		else
@@ -130,7 +128,7 @@ export default class Router {
 
 	add_route(name, props){
 		const route = new this.constructor({
-			name, parent: this, router: this.router
+			name, parent: this, router: this.router, auto_init: true
 		}, props);
 
 		if (this.routes[name]) console.warn("route override?");
