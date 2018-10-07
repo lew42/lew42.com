@@ -11,14 +11,18 @@ export default class Router {
 		} else if (this.auto_init){
 			this.initialize();
 		}
+
+		this.init(this);
 	}
 
+	init(){}
+	
 	initialize_router(){
 		this.router = this;
 		this.name = this.name || "router";
 
 		// break the /#/hash/hash-parts/ into ["hash", "hash_parts"]
-		this.hash = window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
+		this.hash = window.location.hash && window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
 		
 		// activate without push
 		this.activate(false);

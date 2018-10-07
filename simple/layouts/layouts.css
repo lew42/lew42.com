@@ -1,0 +1,13 @@
+
+p { margin-bottom: 1em; }
+.bg-ddd.bg-ddd.bg-ddd { background: #ddd; }
+
+.pad-l { padding: 2em; }
+
+.paper {
+	max-width: 40em;
+	background: #fff;
+	padding: 1em;
+	margin: 0 auto 1em;
+	box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
+}

@@ -1,11 +1,17 @@
 import dev from "/simple/dev/dev.js";
 import is from "/simple/is/is.js";
-import Router from "/simple/Router/Router.js";
+import _Router from "/simple/Router/Router.js";
 import View, {el, div} from "/simple/View/View.js";
 
 /*
 Route:Page must stay 1:1
 */
+
+class Router extends _Router {
+	nohash(){
+		console.log("no hash..");
+	}
+}
 
 View.stylesheet("/simple/Page/Pager.css");
 
@@ -47,27 +53,15 @@ export default class Page {
 	}
 
 	prerender_pager(){
-		// this.view = div(
-		// 	this.preview = div().addClass("page pager preview")
-		// 		.append(this.preview.bind(this)),
-		// 	this.pages = div().addClass("pages")
-		// );
-
 		this.view = div().addClass("pager").append({
 			preview: this.preview.bind(this),
 			pages: div()
 		});
 
 		// to maintain a consistent api between pager & page, 
-		// rather than be semantically correct (nested elements vs extraneous)
-		// this would also make renesting the markup easier...
-		// there should be no problem boosting deeper references,
-		// but I don't see a problem doing it as needed (rather than automate building them)
-		/*
-		I think the important part, is that there's a prescribed way.  And having this.view.sub.sub.sub makes sense, as a default.  And then
-		manually elevate them (this.subsubsub);
-		*/
 		this.preview = this.view.preview;
+
+		this.views.push(this.preview);
 
 		// skips the on-demand .render() that the page's rely on
 		this.rendered = true;
@@ -77,23 +71,11 @@ export default class Page {
 		this.preview = div().addClass("page preview")
 			.append(this.preview.bind(this))
 			.appendTo(this.parent.preview.routes);
+		this.views.push(this.preview);
 	}
 
-	/*
-	With this pattern, we ALWAYS have to pass a function to preview.
-	We can't pass a string, or a div(), for example...
-	Another option would be .append_with(ctx, value).
-	We would have to bake this into the existing append() algorithm,
-	to avoid having to copy+paste the algorithm...
-		I think you could just add an argument?
-
-	No, append -> append_with(this, ...arguments);
-
-	This is all so we can bind, if function, and pass along the value otherwise?
-
-	this.preview.bind && this.preview.bind(this) || this.preview
-		// bind if fn, otherwise, pass along the value
-	*/
+	
+	// With this pattern, we ALWAYS have to pass a function to preview.
 	preview(preview){
 		return {
 			name: div(this.name).click(() => this.route.activate()),
@@ -106,9 +88,9 @@ export default class Page {
 		if (!this.rendered){
 			this.render();
 			this.rendered = true;
+		} else {
+			this.classify();
 		}
-
-		this.classify();
 	}
 
 	deactivated(){
@@ -117,8 +99,10 @@ export default class Page {
 	}
 
 	render(){
-		this.view = div().addClass("page").append(this.content.bind(this)).appendTo(this.pager.view.pages);
-		this.views.push(this.view);
+		this.view = div().addClass("page"); // 1
+		this.views.push(this.view); // 2
+		this.classify(); // 3
+		this.view.append(this.content.bind(this)).appendTo(this.pager.view.pages); // 4
 	}
 
 	btn(){

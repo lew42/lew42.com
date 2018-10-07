@@ -1,22 +1,18 @@
-.pager { background: #eee; }
+body { margin: 0; }
 
-.pager > .preview { padding: 1em; background: #ddd; }
+.pager {/* background: #eee; */}
+
+.pager > .preview {padding: 1em;background: #ddd;position: fixed;bottom: 0;right: 0;/* left: 0; */}
 .pager > .preview > * { margin-bottom: 0.25em; }
 
 .pager > .preview > .name { font-size: 1.2em; margin-bottom: 0.25em;}
 .pager > .preview .routes {}
-.pager > .preview .routes .name { background: #eee; padding: 0.25em 1em; }
-
-.pager > .preview > .routes .preview {
-	cursor: pointer;
-	/* padding: 0.25em 0.5em; */
-	margin-bottom: 0.25em;
-}
+.pager > .preview .routes .name { background: #eee; padding: 0.25em 1em; cursor: pointer; margin-bottom: 0.25em;}
 
 .pager > .preview > .routes > .preview > .routes {/* padding: 0.25em 1em; *//* background: #ddd; */}
 
 .pager > .preview .routes .routes { padding-left: 1em; }
-.pager > .pages { padding: 1em; }
+.pager > .pages {padding: 1em;background: #444;}
 .pager > .pages > .page {background: #fff;padding: 1em;}
 .pager > .pages > .page:not(.active-page) { display: none; }
 
