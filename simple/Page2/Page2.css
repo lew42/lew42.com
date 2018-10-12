@@ -1,0 +1,19 @@
+body { margin: 0; }
+
+.pager2 {/* background: #eee; */}
+
+.pager2 > .preview {padding: 1em;background: #ddd;position: fixed;bottom: 0;right: 0;/* left: 0; */}
+.pager2 > .preview > * { margin-bottom: 0.25em; }
+
+.pager2 > .preview > .name { font-size: 1.2em; margin-bottom: 0.25em;}
+.pager2 > .preview .routes {}
+.pager2 > .preview .routes .name { background: #eee; padding: 0.25em 1em; cursor: pointer; margin-bottom: 0.25em;}
+
+.pager2 > .preview > .routes > .preview > .routes {/* padding: 0.25em 1em; *//* background: #ddd; */}
+
+.pager2 > .preview .routes .routes { padding-left: 1em; }
+.pager2 > .pages {padding: 1em;background: #444;}
+.pager2 > .pages > .page {background: #fff;padding: 1em;}
+.pager2 > .pages > .page:not(.active-page) { display: none; }
+
+:last-child:last-child:last-child:last-child:last-child:last-child { margin-bottom: 0; }
