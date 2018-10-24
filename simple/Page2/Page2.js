@@ -44,7 +44,7 @@ export default class Page {
 
 	initialize_page(){
 		// this.prerender_page();
-		this.route = this.parent.route.add(this.name, {
+		this.route = this.parent.route.add(this.name, route => this.route = route, {
 			activated: () => this.activated(),
 			deactivated: () => this.deactivated(),
 			auto_init: false

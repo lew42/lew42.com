@@ -32,8 +32,10 @@ function paper(){
 page.add({
 ///
 
-post1(){
-	this.view.addClass("bg-ddd pad-l");
+post1(post, view){
+	post.props;
+	view.addClass("bg-ddd pad-l");
+	
 	paper(
 		el("h1", "This is an H1 Header Tag."),
 		p().filler("2-4s")

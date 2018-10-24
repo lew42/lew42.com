@@ -393,11 +393,3 @@ View.prototype.capturable = true;
 // 		});
 // 	}
 // });
-
-View.body = new View({
-	el: document.body,
-	capturable: false
-});
-
-View.app = new View().addClass("default app").appendTo(document.body);
-View.set_captor(View.app);
