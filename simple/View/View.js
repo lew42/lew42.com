@@ -356,29 +356,72 @@ export default class View {
 	}
 }
 
-export function el(tag, ...args){
-	return new View({ tag }).append(...args);
+View.elements = {
+	el(tag, ...args){
+		return new View({ tag }).append(...args);
+	},
+	div(){
+		return new View().append(...arguments);
+	}
+};
+
+View.elements.el.c = function(tag, classes, ...args){
+	return new View({ tag }).addClass(classes).append(...args);
 }
 
-export function div(){
-	return new View().append(...arguments);
+View.elements.div.c = function(classes, ...args){
+	return new View().addClass(classes).append(...args);
 }
 
-export function p(){
-	return el("p", ...arguments);
-}
+View.classy = {
+	el(tag, classes, ...args){
+		return new View({ tag }).addClass(classes).append(...args);
+	},
+	div(classes, ...args){
+		return new View().addClass(classes).append(...args);
+	}
+};
 
-export function h1(){
-	return el("h1", ...arguments);
-}
+View.smarty = {
+	el(token, ...args){},
+	div(token, ...args){
+		if (token[0] === "."){
+			return new View().addClass(token.slice(1)).append(...args);
+		} else {
+			return new View().append(...arguments); // append all args
+		}
+	}
+};
 
-export function h2(){
-	return el("h2", ...arguments);
-}
+/*
+div("hello world")
+div(".hello", "world")
+div(".hell.o", "world")
+div(".hell o", "world")
 
-export function h3(){
-	return el("h3", ...arguments);
+if it's not part of the append_obj system, you could grab the first class as a property, and auto-reference...
+
+content(){
+	div(".one", "one"); // appends to parent, but also assigns to prop .one?
 }
+*/
+
+["p", "h1", "h2", "h3"].forEach(tag => {
+	View.elements[tag] = function(){
+		return new View({ tag }).append(...arguments);
+	};
+
+	View.elements[tag].c = function(classes, ...args){
+		return new View({ tag }).addClass(classes).append(...args);
+	}
+
+	View.classy[tag] = function(classes, ...args){
+		return new View({ tag }).addClass(classes).append(...args);
+	};
+})
+
+export const { el, div, p, h1, h2, h3 } = View.elements;
+export { View }
 
 View.previous_captors = [];
 View.prototype.filler = filler;

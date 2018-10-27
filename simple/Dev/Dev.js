@@ -1,5 +1,6 @@
 import Storage from "../Storage/Storage.js";
 
+
 export default class Dev {
 
 	constructor(){
@@ -12,9 +13,9 @@ export default class Dev {
 	connect(){
 		this.socket = new WebSocket("ws://" + window.location.host);
 
-		this.socket.addEventListener("open", function(){
+		this.socket.addEventListener("open", () => {
 			console.log("%csimple.dev.socket connected", "color: green; font-weight: bold;");
-			socket.send("connection!");
+			this.socket.send("connection!");
 		});
 
 		this.socket.addEventListener("message", function(e){
@@ -27,7 +28,7 @@ export default class Dev {
 
 		this.storage.set("livereload", true);
 
-		return socket;
+		return this.socket;
 	}
 
 	reset(){
