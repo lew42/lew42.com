@@ -1,9 +1,36 @@
 import Page from "/simple/Page2/Page2.js";
-import View, {el, div} from "/simple/View/View.js";
+import simple, {View, el, div } from "/simple/simple.js";
+View.set_captor(new View({ el: document.body, capturable: false }));
 
 const page = new Page({
 	name: "Root"
 });
+
+/*
+
+page.add("one", one => {
+	one.add("one_a", one_a => {
+		
+	});
+
+	one.add({
+		one_b(one_b){
+			
+		},
+		one_c(){
+			this.add("one_c_1", ...)
+		}
+	});
+
+});
+
+*/
+
+page.view = div().addClass("pager").append({
+	pages: div()
+});
+
+console.log(page.view.pages);
 
 page.add("one", function(){
 	div("one content");
@@ -29,6 +56,9 @@ page.add("two", function(){
 });
 
 
+// page.render().appendTo(document.body);
+
+
 // // post content function?
 // export default post => {
 // 	h1();
@@ -36,35 +66,35 @@ page.add("two", function(){
 // };
 
 
-export default new Post({
-	title: "This is my First Post",
-	content(){
+// export default new Post({
+// 	title: "This is my First Post",
+// 	content(){
 
-	}, 
-	content, // imported, predefined, or hoisted
-});
+// 	}, 
+// 	content, // imported, predefined, or hoisted
+// });
 
-function content(){
+// function content(){
 
-}
+// }
 
 // and in index.js:
 
-import some_post from "./some-post.js";
+// import some_post from "./some-post.js";
 
 // lew42.page(some_post.single());
 
-lew42.append(some_post.single());
+// lew42.append(some_post.single());
 
-lew42.app.append(some_post.single());
+// lew42.app.append(some_post.single());
 
-lew42.main.append(some_post.single()); // won't be captured...
+// lew42.main.append(some_post.single()); // won't be captured...
 
 // or
 
-lew42.main(() => {
-	some_post.single();
-});
+// lew42.main(() => {
+// 	some_post.single();
+// });
 
 
 /*

@@ -9,7 +9,7 @@ Route:Page must stay 1:1
 
 class Router extends _Router {
 	nohash(){
-		console.log("no hash..");
+		console.log("no hash..", this.name);
 	}
 }
 
@@ -46,11 +46,8 @@ export default class Page {
 		// this.prerender_page();
 		this.route = this.parent.route.add(this.name, route => this.route = route, {
 			activated: () => this.activated(),
-			deactivated: () => this.deactivated(),
-			auto_init: false
+			deactivated: () => this.deactivated()
 		});
-
-		this.route.initialize();
 	}
 
 	// prerender_pager(){
@@ -103,8 +100,12 @@ export default class Page {
 		this.view = div().addClass("page"); // 1
 		this.views.push(this.view); // 2
 		this.classify(); // 3
-		this.view.append(this.content.bind(this)).appendTo(this.pager.view.pages); // 4
+		this.view.append(this.content.bind(this, this)).appendTo(this.pager.view.pages); // 4
+
+		return this.view;
 	}
+
+	content(){}
 
 	btn(){
 		const btn = div(this.name).click(() => this.route.activate());

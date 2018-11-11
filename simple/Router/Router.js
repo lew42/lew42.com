@@ -3,19 +3,17 @@ import is from "/simple/is/is.js";
 export default class Router {
 	constructor(){
 		this.assign(...arguments);
-
-		this.routes = {};
-
-		if (!this.parent){
-			this.initialize_router();
-		} else if (this.auto_init){
-			this.initialize();
-		}
-
-		this.init(this);
+		this.initialize();
 	}
 
-	init(){}
+	initialize(){
+		this.routes = {};
+
+		if (!this.parent)
+			this.initialize_router();
+		else
+			setTimeout(() => this.initialize_route(), 0);
+	}
 	
 	initialize_router(){
 		this.router = this;
@@ -25,10 +23,10 @@ export default class Router {
 		this.hash = window.location.hash && window.location.hash.slice(2, -1).replace(/-/g, "_").split("/");
 		
 		// activate without push
-		this.activate(false);
+		setTimeout(() => this.activate(false), 0);
 	}
 
-	initialize(){
+	initialize_route(){
 		if (this.parent.hash && this.parent.hash.length)
 			this.match();
 		else
@@ -132,14 +130,14 @@ export default class Router {
 
 	add_route(name, props){
 		const route = new this.constructor({
-			name, parent: this, router: this.router, auto_init: true
+			name, parent: this, router: this.router
 		}, props);
 
 		if (this.routes[name]) console.warn("route override?");
 		else this.routes[name] = route;
 		
-		if (!this[name]) this[name] = route;
-		else console.warn("prop", name, "taken");
+		// if (!this[name]) this[name] = route;
+		// else console.warn("prop", name, "taken");
 		
 		return route;
 	}

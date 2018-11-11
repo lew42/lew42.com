@@ -1,13 +1,13 @@
 import Page from "/simple/Page/Page.js";
 import View, {el, div} from "/simple/View/View.js";
+View.set_captor(new View({ el: document.body, capturable: false }));
 
-const page = new Page({
+const pager = new Page({
 	name: "Root"
 });
 
-page.add("one", function(){
+pager.add("one", function(){
 	div("one content");
-	
 	this.add({
 		one_1(){
 			div("one_1 content?")
@@ -24,6 +24,6 @@ page.add("one", function(){
 	})
 });
 
-page.add("two", function(){
+pager.add("two", function(){
 	div("this is page 2?");
 });

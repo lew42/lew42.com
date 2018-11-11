@@ -13,17 +13,13 @@ export default class Site {
 	}
 
 	initialize(){
-		this.initialize_site();
-		this.prerender();
-		this.render();
-	}
-
-	initialize_site(){
 		this.initialize_html();
 		this.initialize_head();
 		this.initialize_css();
 		this.initialize_body();
 		this.initialize_dev();
+
+		this.prerender();
 	}
 
 	initialize_html(){
@@ -64,7 +60,6 @@ export default class Site {
 		this.View.set_captor(this.body);
 	}
 
-	render(){}
 
 	assign(){
 		return Object.assign(this, ...arguments);

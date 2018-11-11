@@ -354,44 +354,76 @@ export default class View {
 			return new this({ content: value }, ...args);
 		}
 	}
+
+	static elements(){
+		const View = this;
+		const fns = {
+			el(tag, ...args){
+				return new View({ tag }).append(...args);
+			},
+			div(){
+				return new View().append(...arguments);
+			}
+		};
+
+		fns.el.c = function(tag, classes, ...args){
+			return new View({ tag }).addClass(classes).append(...args);
+		};
+
+		fns.div.c = function(classes, ...args){
+			return new View().addClass(classes).append(...args);
+		};
+
+		["p", "h1", "h2", "h3"].forEach(tag => {
+			fns[tag] = function(){
+				return new View({ tag }).append(...arguments);
+			};
+
+			fns[tag].c = function(classes, ...args){
+				return new View({ tag }).addClass(classes).append(...args);
+			};
+		})
+
+		return fns;
+	}
 }
 
-View.elements = {
-	el(tag, ...args){
-		return new View({ tag }).append(...args);
-	},
-	div(){
-		return new View().append(...arguments);
-	}
-};
+// View.elements = {
+// 	el(tag, ...args){
+// 		return new View({ tag }).append(...args);
+// 	},
+// 	div(){
+// 		return new View().append(...arguments);
+// 	}
+// };
 
-View.elements.el.c = function(tag, classes, ...args){
-	return new View({ tag }).addClass(classes).append(...args);
-}
+// View.elements.el.c = function(tag, classes, ...args){
+// 	return new View({ tag }).addClass(classes).append(...args);
+// }
 
-View.elements.div.c = function(classes, ...args){
-	return new View().addClass(classes).append(...args);
-}
+// View.elements.div.c = function(classes, ...args){
+// 	return new View().addClass(classes).append(...args);
+// }
 
-View.classy = {
-	el(tag, classes, ...args){
-		return new View({ tag }).addClass(classes).append(...args);
-	},
-	div(classes, ...args){
-		return new View().addClass(classes).append(...args);
-	}
-};
+// View.classy = {
+// 	el(tag, classes, ...args){
+// 		return new View({ tag }).addClass(classes).append(...args);
+// 	},
+// 	div(classes, ...args){
+// 		return new View().addClass(classes).append(...args);
+// 	}
+// };
 
-View.smarty = {
-	el(token, ...args){},
-	div(token, ...args){
-		if (token[0] === "."){
-			return new View().addClass(token.slice(1)).append(...args);
-		} else {
-			return new View().append(...arguments); // append all args
-		}
-	}
-};
+// View.smarty = {
+// 	el(token, ...args){},
+// 	div(token, ...args){
+// 		if (token[0] === "."){
+// 			return new View().addClass(token.slice(1)).append(...args);
+// 		} else {
+// 			return new View().append(...arguments); // append all args
+// 		}
+// 	}
+// };
 
 /*
 div("hello world")
@@ -406,22 +438,22 @@ content(){
 }
 */
 
-["p", "h1", "h2", "h3"].forEach(tag => {
-	View.elements[tag] = function(){
-		return new View({ tag }).append(...arguments);
-	};
+// ["p", "h1", "h2", "h3"].forEach(tag => {
+// 	View.elements[tag] = function(){
+// 		return new View({ tag }).append(...arguments);
+// 	};
 
-	View.elements[tag].c = function(classes, ...args){
-		return new View({ tag }).addClass(classes).append(...args);
-	}
+// 	View.elements[tag].c = function(classes, ...args){
+// 		return new View({ tag }).addClass(classes).append(...args);
+// 	}
 
-	View.classy[tag] = function(classes, ...args){
-		return new View({ tag }).addClass(classes).append(...args);
-	};
-})
+// 	View.classy[tag] = function(classes, ...args){
+// 		return new View({ tag }).addClass(classes).append(...args);
+// 	};
+// })
 
-export const { el, div, p, h1, h2, h3 } = View.elements;
-export { View }
+export const { el, div, p, h1, h2, h3 } = View.elements();
+export { View };
 
 View.previous_captors = [];
 View.prototype.filler = filler;
