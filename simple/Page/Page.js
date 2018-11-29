@@ -1,4 +1,4 @@
-import dev from "/simple/dev/dev.js";
+// import dev from "/simple/dev/dev.js";
 import is from "/simple/is/is.js";
 import _Router from "/simple/Router/Router.js";
 import View, {el, div} from "/simple/View/View.js";

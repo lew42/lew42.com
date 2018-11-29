@@ -118,3 +118,48 @@ route("one", one => {
 ## reloading?
 
 The past versions of the test runner just reload the page when you iso.  This isn't absolutely necessary, but it's helpful to guarantee a clean console/environment.
+
+
+
+## Simplest Model?
+
+// before pages wrapper
+
+route(() => {}); // renders the pages wrapper and default page
+
+// sub pages can get added wherever
+route("name", () => {}); // sub page
+
+// added after pages wrapper
+
+
+
+router = new Router();
+
+router.default(() => {});
+router.split(); // list + viewport
+router.switch(); // viewport + swap
+
+div.c("cols",
+	div.c("left", router.list()),
+	div.c("right", router.breadcrumbs(), router.render())
+);  // maybe each page needs its own list...
+
+The way in which new pages are added, rendered, and interact with eachother should be a custom implementation.  And I can create various examples...?
+
+
+router.no_hash (&& no_match)
+
+router.has_hash
+	router.hash_no_match (&& no_match)
+	router.hash_match
+
+Avoid async, use init(this)...
+
+router.add("name", {
+	init: route => this.route = route, // sets up page.route for immediate activation...
+});
+
+view.css_class_prefix = "lew42";
+view.append({ one, two, three }) ==> lew42-one, lew42-two, lew42-three
+
