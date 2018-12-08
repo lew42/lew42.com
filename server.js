@@ -3,11 +3,12 @@ const chokidar = require("chokidar");
 const WebSocket = require("ws");
 const http = require("http");
 const app = express();
-const sites = [ "simple" ];
 
-for (const site of sites){
-	app.use("/"+site+"/", express.static(__dirname + "/"+site));
-}
+// const sites = [ "simple" ];
+
+// for (const site of sites){
+// 	app.use("/"+site+"/", express.static(__dirname + "/"+site));
+// }
 
 app.use(express.static(__dirname + "/lew42.github.io"));
 
@@ -26,11 +27,13 @@ wss.on("connection", function(ws){
 
 	// service(ws);
 
-	chokidar.watch(sites.map(site => "./" + site).concat([
-			"./lew42.github.io",
+	chokidar.watch(
+		// sites.map(site => "./" + site).concat(
+		[ "./lew42.github.io",
 			"!**/*.css",
-			"!**/.git"
-		])).on("change", (e) => {
+			"!**/.git" ]
+		// )
+		).on("change", (e) => {
 		console.log(e, "changed, sending reload message");
 		ws.send("reload", (err) => {
 			if (err) console.log("livereload transmit error");
